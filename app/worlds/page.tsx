@@ -1,3 +1,4 @@
+import { World } from "@/components/world";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -16,9 +17,12 @@ export default async function ProtectedPage() {
 
   return (
     <div>
-        <div>{data?.map(e=>(
-          <div key={e.name}>{e.name}</div>
-        ))}</div>
+      <h3 className="text-xl">Your worlds</h3>
+      <div className="grid grid-cols-3 grid-flow-row auto-rows-fr gap-2 mt-2">
+          {data?.map(e=>(
+            <World key={e.project_name} project={e}/>
+          ))}
+      </div>
     </div>
   );
 }
