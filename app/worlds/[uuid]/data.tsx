@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { projectData } from "@/db/schemes";
 import { ColorsToNumber, CreateColorSwatches, minecraftColors } from "@/lib/colorUtils";
+import { Content, List, Root, Trigger } from "@radix-ui/react-tabs";
 import { LucidePlus, LucideTrash } from "lucide-react";
 import { MouseEvent, RefObject, useEffect, useRef, useState } from "react";
 
@@ -104,7 +105,7 @@ export function Data({ id } : {id : string}) {
     }
 
     return (
-        <div>
+        <>
             <dialog ref={dialogModal} onClick={CheckDialogBounds} className="backdrop:backdrop-blur-none backdrop:backdrop-brightness-50 p-2 rounded-lg">
                 <div className="flex justify-between">
                     <h2>Add Frequency</h2>
@@ -136,24 +137,55 @@ export function Data({ id } : {id : string}) {
                     <Button type="submit" className="mt-4">Add</Button>
                 </form>
             </dialog>
-            <div className="flex justify-between">
-                <h3 className="text-2xl">Frequencies</h3>
-                <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading}>Add new <LucidePlus /></Button>
-            </div>
-            <div className="flex flex-col mt-1 divide-y-2 divide-zinc-800">
-                {loading ? <Skeleton /> : projectData ? projectData.length > 0 ? projectData.map(e=>(
-                    <div key={e.number} className="flex justify-between py-1">
-                        <div className="grid-cols-[auto_1fr] grid items-center gap-4">
-                            <div className="flex gap-1">
-                                {CreateColorSwatches(+e.number)}
-                            </div>
-                            <h4 className="text-xl">{e.text_value}</h4>
-                        </div>
-                        <Button variant={"ghost"} className="p-0 aspect-square" onClick={()=>DeleteRow(+e.id)}><LucideTrash className="text-destructive" /></Button>
+            <Root defaultValue="chests">
+                <List aria-label="Switch display" className="pb-6 flex">
+                    <Trigger value="chests" className="border-input aria-selected:border-purple-400 border-b-2 flex-1 p-2 text-lg">
+                        Ender-Chests
+                    </Trigger>
+                    <Trigger value="tanks" className="border-input aria-selected:border-purple-400 border-b-2 flex-1 p-2 text-lg">
+                        Ender-Tanks
+                    </Trigger>
+                </List>
+                <Content value="chests">
+                    <div className="flex justify-between">
+                        <h3 className="text-2xl">Frequencies</h3>
+                        <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading}>Add new <LucidePlus /></Button>
                     </div>
-                )) : <div className="w-full text-center">None yet, start by adding one</div> : <div>Error loading frequencies</div>}
-            </div>
-        </div>
+                    <div className="flex flex-col mt-1 divide-y-2 divide-zinc-800">
+                        {loading ? <Skeleton /> : projectData ? projectData.length > 0 ? projectData.map(e=>(
+                            <div key={e.number} className="flex justify-between py-1">
+                                <div className="grid-cols-[auto_1fr] grid items-center gap-4">
+                                    <div className="flex gap-1">
+                                        {CreateColorSwatches(+e.number)}
+                                    </div>
+                                    <h4 className="text-xl">{e.text_value}</h4>
+                                </div>
+                                <Button variant={"ghost"} className="p-0 aspect-square" onClick={()=>DeleteRow(+e.id)}><LucideTrash className="text-destructive" /></Button>
+                            </div>
+                        )) : <div className="w-full text-center">None yet, start by adding one</div> : <div>Error loading frequencies</div>}
+                    </div>
+                </Content>
+                <Content value="tanks">
+                    <div className="flex justify-between">
+                        <h3 className="text-2xl">Frequencies</h3>
+                        <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading}>Add new <LucidePlus /></Button>
+                    </div>
+                    <div className="flex flex-col mt-1 divide-y-2 divide-zinc-800">
+                        {loading ? <Skeleton /> : projectData ? projectData.length > 0 ? projectData.map(e=>(
+                            <div key={e.number} className="flex justify-between py-1">
+                                <div className="grid-cols-[auto_1fr] grid items-center gap-4">
+                                    <div className="flex gap-1">
+                                        {CreateColorSwatches(+e.number)}
+                                    </div>
+                                    <h4 className="text-xl">{e.text_value}</h4>
+                                </div>
+                                <Button variant={"ghost"} className="p-0 aspect-square" onClick={()=>DeleteRow(+e.id)}><LucideTrash className="text-destructive" /></Button>
+                            </div>
+                        )) : <div className="w-full text-center">None yet, start by adding one</div> : <div>Error loading frequencies</div>}
+                    </div>
+                </Content>
+            </Root>
+        </>
     )
 }
 
