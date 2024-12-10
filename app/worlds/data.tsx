@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { World } from "@/components/world";
+import { project } from "@/db/schemes";
 
 export function Data() {
-    const [projectData, setProjectData] = useState([]);
+    const [projectData, setProjectData] : [project[], Function] = useState([]);
     const [loading, setLoading] = useState(true);
     
     useEffect(() => {
