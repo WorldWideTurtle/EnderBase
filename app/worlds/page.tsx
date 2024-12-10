@@ -18,10 +18,7 @@ export default async function ProtectedPage() {
 
   return (
     <div>
-      <h3 className="text-xl">Your worlds</h3>
-      <div className="grid grid-cols-3 grid-flow-row auto-rows-fr gap-2 mt-2">
-          <Data />
-      </div>
+        <Data />
     </div>
   );
 }
