@@ -1,12 +1,9 @@
-import { signOutAction } from "@/app/actions";
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { createClient } from "@/utils/supabase/server";
-import { PostgrestError } from "@supabase/supabase-js";
+import { ProfileIcon } from "./profile-icon";
 
 type userData = {
-  id: number,
-  user_id: string,
   user_name: string
 }
 
@@ -17,19 +14,8 @@ export default async function AuthButton() {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const {data, error} : {data: userData[] | null, error: PostgrestError | null} = await supabase.from("user_data").select("*")
-
-
-
   return user ? (
-    <div className="flex items-center gap-4">
-      Hey, {data ? data[0].user_name : ""}!
-      <form action={signOutAction}>
-        <Button type="submit" variant={"outline"}>
-          Sign out
-        </Button>
-      </form>
-    </div>
+    <ProfileIcon userName={user.user_metadata.user_name}/>
   ) : (
     <div className="flex gap-2">
       <Button asChild size="sm" variant={"outline"}>
