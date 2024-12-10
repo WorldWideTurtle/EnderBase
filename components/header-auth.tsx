@@ -15,7 +15,7 @@ export default async function AuthButton() {
   } = await supabase.auth.getUser();
 
   return user ? (
-    <ProfileIcon userName={user.user_metadata.user_name}/>
+    <ProfileIcon user={user}/>
   ) : (
     <div className="flex gap-2">
       <Button asChild size="sm" variant={"outline"}>
