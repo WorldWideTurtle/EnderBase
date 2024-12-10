@@ -13,7 +13,6 @@ type projectMember = {
 }
 
 type project = {
-    id: string,
     project_uuid: string,
     project_name: string
 }

@@ -2,7 +2,7 @@ import { createClient } from "@/utils/supabase/server";
 
 export async function GET() {
     const supabase = await createClient();
-    let {data, error} = await supabase.from("projects").select("*")
+    let {data, error} = await supabase.from("projects").select("project_uuid,project_name")
 
     if (error) return Response.json({ error: error.message }, {status : 500})
     return Response.json(data, {
