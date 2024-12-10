@@ -36,9 +36,5 @@ export function CreateColorSwatches(number : number) {
 }
 
 export function ColorsToNumber(numbers: number[]) {
-    let final = 0;
-    for (let i = 0; i < numbers.length; i++) {
-        final |= numbers[i] << ((numbers.length - i - 1) * 4);
-    }
-    return final;
+    return (numbers[0] << 8) | (numbers[1] << 4) | numbers[2];
 }

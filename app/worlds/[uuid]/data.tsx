@@ -6,21 +6,30 @@ import { projectData } from "@/db/schemes";
 import { ColorsToNumber, CreateColorSwatches, minecraftColors } from "@/lib/colorUtils";
 import { Content, List, Root, Trigger } from "@radix-ui/react-tabs";
 import { LucidePlus, LucideTrash } from "lucide-react";
-import { MouseEvent, RefObject, useEffect, useRef, useState } from "react";
+import { createRef, MouseEvent, RefObject, useEffect, useRef, useState } from "react";
 
 export function Data({ id } : {id : string}) {
     const [projectData, setProjectData] : [projectData[],Function] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [selectedColors, setSelectedColors] = useState([0,0,0])
 
     const dialogModal : RefObject<HTMLDialogElement | null> = useRef(null)
+
+    const colorInputRefs : RefObject<null | HTMLInputElement>[] = (new Array(48)).fill(0).map(e=>createRef())
+
+    const combinationSet : RefObject<Set<number>> = useRef(new Set())
 
     useEffect(() => {
         // Fetch project data on load
         fetch(`/api/worlds/${id}`)
         .then((res) => res.json())
-        .then((data) => {
+        .then((data : projectData[]) => {
             setProjectData(data);
             setLoading(false);
+
+            data.forEach(e=>{
+                combinationSet.current.add(+e.number)
+            })
         })
         .catch((err) => console.error(err));
     }, [id]);
@@ -32,8 +41,11 @@ export function Data({ id } : {id : string}) {
         const description = formData.get("description") as string
         
         const encodedColor = ColorsToNumber([+a,+b,+c])
+        if (+a > 15 || +b > 15 || +c > 15) return;
         if (description === "" || description.length > 48) return;
+        if (combinationSet.current.has(encodedColor)) return;
 
+        combinationSet.current.add(encodedColor);
         const tempId = `temp-${Math.random()}`; // Temporary ID for optimistic UI
         const optimisticRow = { number: encodedColor,text_value:description, id: tempId };
         const insertedAt = projectData.length;
@@ -55,13 +67,20 @@ export function Data({ id } : {id : string}) {
                         return dataCopy
                     });
                 })
+            } else {
+                combinationSet.current.delete(encodedColor);
+                setProjectData((prev : projectData[]) => {
+                    return prev.toSpliced(insertedAt,1);
+                });
             }
         })
+        CloseDialog();
     }
 
     function DeleteRow(rowId : number) {
         let index = projectData.findIndex((e)=>+e.id === rowId);
         let deletedRow = projectData[index];
+        combinationSet.current.delete(+deletedRow.number)
         setProjectData(projectData.toSpliced(index,1));
 
         fetch(`/api/worlds/${id}`, {
@@ -72,13 +91,14 @@ export function Data({ id } : {id : string}) {
             body: JSON.stringify({rowId : rowId})
         }).then(e=>{
             if (!e.ok) {
-                setProjectData(
-                    [
-                        ...projectData.slice(0,index),
+                combinationSet.current.add(+deletedRow.number)
+                setProjectData((prev : projectData[]) => {
+                    return [
+                        ...prev.slice(0,index),
                         deletedRow,
-                        ...projectData.slice(index+1)
+                        ...prev.slice(index+1)
                     ]
-                );
+                });
             }
         })
     }
@@ -104,6 +124,20 @@ export function Data({ id } : {id : string}) {
         }
     }
 
+    function GetFreeFrequency() {
+        for (let i = 0; i < 16; i++) {
+            for (let j = 0; j < 16; j++) {
+                for (let k = 0; k < 16; k++) {
+                    const combination = ColorsToNumber([i,j,k]);
+                    if (combinationSet.current.has(combination)) continue;
+
+                    setSelectedColors([k,j,i])
+                    return;
+                }
+            }
+        }
+    }
+
     return (
         <>
             <dialog ref={dialogModal} onClick={CheckDialogBounds} className="backdrop:backdrop-blur-none backdrop:backdrop-brightness-50 p-2 rounded-lg">
@@ -115,16 +149,16 @@ export function Data({ id } : {id : string}) {
                     <div>
                         <div className="flex justify-between">
                             <Label>Colors</Label>
-                            <Button variant={"link"} className="p-0 h-fit">Generate free</Button>
+                            <Button variant={"link"} className="p-0 h-fit opacity-85" onClick={GetFreeFrequency}>Generate free</Button>
                         </div>
                         
                         <div className="flex flex-col gap-2 mt-1">
-                            {["a","b","c"].map(group=>(
-                                <ul key={group} className="grid grid-rows-1 max-sm:grid-rows-2 grid-flow-col border border-input">
-                                    {minecraftColors.map((color,i)=>(
-                                        <li key={group + i} className="size-6 aspect-square">
-                                            <Input name={group} id={group + i} type="radio" value={i} className="hidden peer" defaultChecked={i === 0}/>
-                                            <Label htmlFor={group + i} className="size-full inline-block hover:outline hover:outline-1 hover:relative peer-checked:outline-2 peer-checked:outline peer-checked:relative" style={{
+                            {["a","b","c"].map((group,groupIndex)=>(
+                                <ul key={group} className="grid grid-rows-1 max-md:grid-rows-2 grid-flow-col border border-input max-md:gap-1">
+                                    {minecraftColors.map((color,colorIndex)=>(
+                                        <li key={group + colorIndex} className="size-6 aspect-square">
+                                            <Input ref={colorInputRefs[groupIndex * 16 + colorIndex]} name={group} id={group + colorIndex} type="radio" value={colorIndex} className="hidden peer" defaultChecked={selectedColors[groupIndex] === colorIndex}/>
+                                            <Label htmlFor={group + colorIndex} className="size-full inline-block hover:outline hover:outline-1 hover:relative peer-checked:outline-2 peer-checked:outline peer-checked:relative" style={{
                                                 background: color
                                             }}></Label>
                                         </li>
@@ -142,16 +176,16 @@ export function Data({ id } : {id : string}) {
                     <Trigger value="chests" className="border-input aria-selected:border-purple-400 border-b-2 flex-1 p-2 text-lg">
                         Ender-Chests
                     </Trigger>
-                    <Trigger value="tanks" className="border-input aria-selected:border-purple-400 border-b-2 flex-1 p-2 text-lg">
+                    <Trigger value="tanks" className="border-input aria-selected:border-purple-400 transition-[border] border-b-2 flex-1 p-2 text-lg">
                         Ender-Tanks
                     </Trigger>
                 </List>
                 <Content value="chests">
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-end">
                         <h3 className="text-2xl">Frequencies</h3>
                         <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading}>Add new <LucidePlus /></Button>
                     </div>
-                    <div className="flex flex-col mt-1 divide-y-2 divide-zinc-800">
+                    <div className="flex flex-col mt-2 divide-y-2 divide-zinc-800">
                         {loading ? <Skeleton /> : projectData ? projectData.length > 0 ? projectData.map(e=>(
                             <div key={e.number} className="flex justify-between py-1">
                                 <div className="grid-cols-[auto_1fr] grid items-center gap-4">
@@ -166,11 +200,11 @@ export function Data({ id } : {id : string}) {
                     </div>
                 </Content>
                 <Content value="tanks">
-                    <div className="flex justify-between">
+                    <div className="flex justify-between items-end">
                         <h3 className="text-2xl">Frequencies</h3>
                         <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading}>Add new <LucidePlus /></Button>
                     </div>
-                    <div className="flex flex-col mt-1 divide-y-2 divide-zinc-800">
+                    <div className="flex flex-col mt-2 divide-y-2 divide-zinc-800">
                         {loading ? <Skeleton /> : projectData ? projectData.length > 0 ? projectData.map(e=>(
                             <div key={e.number} className="flex justify-between py-1">
                                 <div className="grid-cols-[auto_1fr] grid items-center gap-4">
