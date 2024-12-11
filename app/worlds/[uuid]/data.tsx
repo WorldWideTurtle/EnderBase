@@ -7,7 +7,7 @@ import { ColorsToNumber, CreateColorSwatches, minecraftColors } from "@/lib/colo
 import { Content, List, Root, Trigger } from "@radix-ui/react-tabs";
 import { PostgrestError } from "@supabase/supabase-js";
 import { LucidePlus, LucideTrash } from "lucide-react";
-import { createRef, Dispatch, MouseEvent, RefObject, useEffect, useRef, useState } from "react";
+import { createRef, MouseEvent, RefObject, useEffect, useRef, useState } from "react";
 
 type pseudoProjectData = projectData & {loaded?:boolean}
 
