@@ -11,7 +11,7 @@ const defaultUrl = process.env.VERCEL_URL
 
 export const metadata = {
   metadataBase: new URL(defaultUrl),
-  title: "A database for all your enderchest combinations, go ham on that item transport.",
+  title: "EnderBase",
   description: "The easiest way to keep track of those color combinations.",
 };
 
