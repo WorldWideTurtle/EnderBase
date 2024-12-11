@@ -215,10 +215,10 @@ export function Data({ id } : {id : string}) {
             </Dialog>
             <Root defaultValue="chests" onValueChange={OnTabChange}>
                 <List aria-label="Switch display" className="pb-6 flex">
-                    <Trigger value="chests" className="border-input aria-selected:border-purple-400 transition-[border] border-b-2 flex-1 p-2 text-lg">
+                    <Trigger value="chests" className="relative flex-1 p-2 text-lg after:transition-[background-color] aria-selected:after:bg-purple-400 after:bg-input after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 aria-selected:after:h-1">
                         Ender-Chests
                     </Trigger>
-                    <Trigger value="tanks" className="border-input aria-selected:border-purple-400 transition-[border] border-b-2 flex-1 p-2 text-lg">
+                    <Trigger value="tanks" className="relative flex-1 p-2 text-lg after:transition-[background-color] aria-selected:after:bg-purple-400 after:bg-input after:absolute after:bottom-0 after:left-0 after:w-full after:h-0.5 aria-selected:after:h-1">
                         Ender-Tanks
                     </Trigger>
                 </List>
