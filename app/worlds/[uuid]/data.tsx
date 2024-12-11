@@ -8,8 +8,10 @@ import { Content, List, Root, Trigger } from "@radix-ui/react-tabs";
 import { PostgrestError } from "@supabase/supabase-js";
 import { LucidePlus, LucideTrash } from "lucide-react";
 import { createRef, MouseEvent, RefObject, useEffect, useRef, useState } from "react";
+import { FrequencyList } from "./frequency-list";
 
 type pseudoProjectData = projectData & {loaded?:boolean}
+export type { pseudoProjectData }
 
 export function Data({ id } : {id : string}) {
     const [chestData, setChestData] : [pseudoProjectData[],Function] = useState([]);
@@ -285,27 +287,4 @@ function Skeleton() {
             </div>
         </div>
     ))
-}
-
-type FrequencyProps = {
-    data : pseudoProjectData[];
-    onClick : (arg0 : number) => void;
-}
-
-function FrequencyList({data, onClick} : FrequencyProps) {
-    return (
-        data.map(e=>(
-            <div key={e.number} className="flex justify-between py-[2] hover:bg-input/50 px-2 rounded-md" style={{
-                opacity: e.loaded === false ? .5 : 1
-            }}>
-                <div className="grid-cols-[auto_1fr] grid items-center gap-4">
-                    <div className="flex gap-1">
-                        {CreateColorSwatches(+e.number)}
-                    </div>
-                    <h4 className="text-xl">{e.text_value}</h4>
-                </div>
-                <Button variant={"ghost"} className="p-0 aspect-square" disabled={e.loaded === false ? true : false} onClick={()=>{onClick(+e.id)}}><LucideTrash className="text-destructive" /></Button>
-            </div>
-        ))
-    )
 }
