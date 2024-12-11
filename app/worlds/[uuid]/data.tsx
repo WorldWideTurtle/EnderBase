@@ -20,7 +20,7 @@ export function Data({ id } : {id : string}) {
     const dialogModal : RefObject<HTMLDialogElement | null> = useRef(null)
 
     const colorInputRefs : RefObject<null | HTMLInputElement>[] = (new Array(48)).fill(0).map(e=>createRef())
-    const tabTriggerRefs : RefObject<null | HTMLButtonElement>[] = (new Array(2)).fill(0).map(e=>createRef())
+    const isOnEnderChestTab : RefObject<boolean> = useRef(true);
 
     const chestFrequencySet : RefObject<Set<number>> = useRef(new Set())
     const tankFrequencySet : RefObject<Set<number>> = useRef(new Set())
@@ -68,8 +68,7 @@ export function Data({ id } : {id : string}) {
     }
 
     function AddFrequency(formData: FormData) {
-        if (tabTriggerRefs[0].current === null) return;
-        const isEnderChest = tabTriggerRefs[0].current.getAttribute("data-state") === "active";
+        const isEnderChest = isOnEnderChestTab.current;
         const frequencySet = isEnderChest ? chestFrequencySet.current : tankFrequencySet.current;
         const data = isEnderChest ? chestData : tankData;
         const dispatcher = isEnderChest ? setChestData : setTankData;
@@ -114,8 +113,7 @@ export function Data({ id } : {id : string}) {
     }
 
     function DeleteRow(rowId : number) {
-        if (tabTriggerRefs[0].current === null) return;
-        const isEnderChest = tabTriggerRefs[0].current.getAttribute("data-state") === "active";
+        const isEnderChest = isOnEnderChestTab.current;
         const frequencySet = isEnderChest ? chestFrequencySet.current : tankFrequencySet.current;
         const data = isEnderChest ? chestData : tankData;
         const dispatcher = isEnderChest ? setChestData : setTankData;
@@ -176,9 +174,7 @@ export function Data({ id } : {id : string}) {
     }
 
     function GetFreeFrequency() {
-        if (tabTriggerRefs[0].current === null) return;
-        const isEnderChest = tabTriggerRefs[0].current.getAttribute("data-state") === "active";
-        const frequencySet = isEnderChest ? chestFrequencySet.current : tankFrequencySet.current;
+        const frequencySet = isOnEnderChestTab.current ? chestFrequencySet.current : tankFrequencySet.current;
         
         for (let i = 0; i < 16; i++) {
             for (let j = 0; j < 16; j++) {
@@ -191,6 +187,10 @@ export function Data({ id } : {id : string}) {
                 }
             }
         }
+    }
+
+    function OnTabChange(value: string) {
+        isOnEnderChestTab.current = value === "chests";
     }
 
     return (
@@ -226,12 +226,12 @@ export function Data({ id } : {id : string}) {
                     <Button type="submit" className="mt-4">Add</Button>
                 </form>
             </dialog>
-            <Root defaultValue="chests">
+            <Root defaultValue="chests" onValueChange={OnTabChange}>
                 <List aria-label="Switch display" className="pb-6 flex">
-                    <Trigger ref={tabTriggerRefs[0]} value="chests" className="border-input aria-selected:border-purple-400 transition-[border] border-b-2 flex-1 p-2 text-lg">
+                    <Trigger value="chests" className="border-input aria-selected:border-purple-400 transition-[border] border-b-2 flex-1 p-2 text-lg">
                         Ender-Chests
                     </Trigger>
-                    <Trigger ref={tabTriggerRefs[1]} value="tanks" className="border-input aria-selected:border-purple-400 transition-[border] border-b-2 flex-1 p-2 text-lg">
+                    <Trigger value="tanks" className="border-input aria-selected:border-purple-400 transition-[border] border-b-2 flex-1 p-2 text-lg">
                         Ender-Tanks
                     </Trigger>
                 </List>
