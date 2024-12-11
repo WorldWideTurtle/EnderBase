@@ -1,11 +1,12 @@
 'use client'
 
-import { MouseEvent, RefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { World } from "@/components/world";
 import { project } from "@/db/schemes";
 import { Button } from "@/components/ui/button";
 import { LucidePlus } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import { Dialog } from "@/components/dialog";
 
 
 
@@ -32,19 +33,6 @@ export function Data() {
 
     function CloseDialog() {
         dialogModal.current?.close();
-    }
-
-    function CheckDialogBounds(e : MouseEvent) {
-        if (dialogModal.current === null) return;
-        const rect = dialogModal.current.getBoundingClientRect();
-        if (
-            e.clientX < rect.left || 
-            e.clientX > rect.right || 
-            e.clientY < rect.top || 
-            e.clientY > rect.bottom
-        ) {
-            CloseDialog()
-        }
     }
 
     function AddWorld(formData : FormData) {
@@ -83,11 +71,7 @@ export function Data() {
 
     return (
         <>
-            <dialog ref={dialogModal} onClick={CheckDialogBounds} className="backdrop:backdrop-blur-none backdrop:backdrop-brightness-50 p-2 rounded-lg">
-                <div className="flex justify-between">
-                    <h2>Add world</h2>
-                    <Button onClick={CloseDialog} className="size-6 aspect-square overflow-hidden p-px" variant={"ghost"}><LucidePlus className="rotate-45 hover:text-red-500"/></Button>
-                </div>
+            <Dialog ref={dialogModal} title="Add world">
                 <form action={AddWorld} className="mt-8 flex flex-col gap-4">
                     <Input 
                         name="name" 
@@ -99,7 +83,7 @@ export function Data() {
                     />
                     <Button type="submit" className="mt-4">Add</Button>
                 </form>
-            </dialog>
+            </Dialog>
             <div className="flex justify-between items-end">
                 <h3 className="text-2xl">Your worlds</h3>
                 <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading}>Add new <LucidePlus /></Button>

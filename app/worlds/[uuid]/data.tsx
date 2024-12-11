@@ -3,12 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { projectData } from "@/db/schemes";
-import { ColorsToNumber, CreateColorSwatches, minecraftColors } from "@/lib/colorUtils";
+import { ColorsToNumber, minecraftColors } from "@/lib/colorUtils";
 import { Content, List, Root, Trigger } from "@radix-ui/react-tabs";
 import { PostgrestError } from "@supabase/supabase-js";
-import { LucidePlus, LucideTrash } from "lucide-react";
-import { createRef, MouseEvent, RefObject, useEffect, useRef, useState } from "react";
+import { LucidePlus } from "lucide-react";
+import { createRef, RefObject, useEffect, useRef, useState } from "react";
 import { FrequencyList } from "./frequency-list";
+import { Dialog } from "@/components/dialog";
 
 type pseudoProjectData = projectData & {loaded?:boolean}
 export type { pseudoProjectData }
@@ -162,19 +163,6 @@ export function Data({ id } : {id : string}) {
         dialogModal.current?.close();
     }
 
-    function CheckDialogBounds(e : MouseEvent) {
-        if (dialogModal.current === null) return;
-        const rect = dialogModal.current.getBoundingClientRect();
-        if (
-            e.clientX < rect.left || 
-            e.clientX > rect.right || 
-            e.clientY < rect.top || 
-            e.clientY > rect.bottom
-        ) {
-            CloseDialog()
-        }
-    }
-
     function GetFreeFrequency() {
         const frequencySet = isOnEnderChestTab.current ? chestFrequencySet.current : tankFrequencySet.current;
         
@@ -195,13 +183,10 @@ export function Data({ id } : {id : string}) {
         isOnEnderChestTab.current = value === "chests";
     }
 
+    
     return (
         <>
-            <dialog ref={dialogModal} onClick={CheckDialogBounds} className="backdrop:backdrop-blur-none backdrop:backdrop-brightness-50 p-2 rounded-lg">
-                <div className="flex justify-between">
-                    <h2>Add Frequency</h2>
-                    <Button onClick={CloseDialog} className="size-6 aspect-square overflow-hidden p-px" variant={"ghost"}><LucidePlus className="rotate-45 hover:text-red-500"/></Button>
-                </div>
+            <Dialog ref={dialogModal} title="Add Frequency">
                 <form action={AddFrequency} className="mt-8 flex flex-col gap-4">
                     <div>
                         <div className="flex justify-between">
@@ -227,7 +212,7 @@ export function Data({ id } : {id : string}) {
                     <Input name="description" type="text" placeholder="Description"/>
                     <Button type="submit" className="mt-4">Add</Button>
                 </form>
-            </dialog>
+            </Dialog>
             <Root defaultValue="chests" onValueChange={OnTabChange}>
                 <List aria-label="Switch display" className="pb-6 flex">
                     <Trigger value="chests" className="border-input aria-selected:border-purple-400 transition-[border] border-b-2 flex-1 p-2 text-lg">
