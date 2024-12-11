@@ -1,4 +1,3 @@
-import { World } from "@/components/world";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 import { Data } from "./data";
@@ -13,8 +12,6 @@ export default async function ProtectedPage() {
   if (!user) {
     return redirect("/sign-in");
   }
-
-  let {data, error} = await supabase.from("projects").select("*")
 
   return (
     <div>
