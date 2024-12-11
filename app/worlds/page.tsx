@@ -14,7 +14,7 @@ export default async function ProtectedPage() {
     return redirect("/sign-in");
   }
 
-  let {data, error} = await supabase.from("projects").select("*")
+  //let {data, error} = await supabase.from("projects").select("*")
 
   return (
     <div>
