@@ -10,6 +10,7 @@ import { LucidePlus } from "lucide-react";
 import { createRef, RefObject, useEffect, useRef, useState } from "react";
 import { FrequencyList } from "./frequency-list";
 import { Dialog } from "@/components/dialog";
+import { createClient } from "@/utils/supabase/client";
 
 type pseudoProjectData = projectData & {loaded?:boolean}
 export type { pseudoProjectData }
@@ -27,31 +28,30 @@ export function Data({ id } : {id : string}) {
 
     const chestFrequencySet : RefObject<Set<number>> = useRef(new Set())
     const tankFrequencySet : RefObject<Set<number>> = useRef(new Set())
-    const dataFetchError : RefObject<PostgrestError |null> = useRef(null)
+    const dataFetchError : RefObject<PostgrestError | null> = useRef(null)
 
     useEffect(() => {
         // Fetch project data on load
-        fetch(`/api/worlds/${id}`)
-        .then((res) => res.json())
-        .then((data : projectData[]) => {
-            const ChestData = [];
-            const TankData = [];
-            for (const frequency of data) {
-                if (frequency.is_ender_chest) {
-                    ChestData.push(frequency)
-                    chestFrequencySet.current.add(+frequency.number)
-                } else {
-                    TankData.push(frequency)
-                    tankFrequencySet.current.add(+frequency.number)
+        createClient().rpc('get_project_data_by_uuid', { input_uuid: id}).then(e=>{
+            if (e.error === null) {
+                const ChestData = [];
+                const TankData = [];
+                for (const frequency of e.data) {
+                    if (frequency.is_ender_chest) {
+                        ChestData.push(frequency)
+                        chestFrequencySet.current.add(+frequency.number)
+                    } else {
+                        TankData.push(frequency)
+                        tankFrequencySet.current.add(+frequency.number)
+                    }
                 }
+                setChestData(ChestData);
+                setTankData(TankData);
+                setLoading(false);
+            } else {
+                dataFetchError.current = e.error;
+                console.error(e.error.message)
             }
-            setChestData(ChestData);
-            setTankData(TankData);
-            setLoading(false);
-        })
-        .catch((err) => {
-            dataFetchError.current = err;
-            console.error(err)
         });
     }, [id]);
 

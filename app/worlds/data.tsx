@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { LucidePlus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog } from "@/components/dialog";
+import { createClient } from "@/utils/supabase/client";
 
 
 
@@ -17,14 +18,14 @@ export function Data() {
     const dialogModal : RefObject<HTMLDialogElement | null> = useRef(null)
     
     useEffect(() => {
-        // Fetch project data on load
-        fetch(`/api/worlds/`)
-        .then((res) => res.json())
-        .then((data) => {
-            setProjectData(data);
-            setLoading(false);
-        })
-        .catch((err) => console.error(err));
+        createClient().from("projects").select("project_uuid,project_name").then(e=>{
+            if (e.error === null) {
+                setProjectData(e.data);
+                setLoading(false);
+            } else {
+                throw new Error(e.error.message)
+            }
+        });
     }, []);
 
     function OpenDialog() {
