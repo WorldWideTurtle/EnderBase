@@ -1,12 +1,13 @@
 'use client'
 
 import { createClient } from '@/utils/supabase/client';
+import { User } from '@supabase/supabase-js';
 import { usePathname } from 'next/navigation';
-import React, { createContext, useState, useEffect, ReactNode, useRef } from 'react';
+import { createContext, useState, useEffect, ReactNode } from 'react';
 
-export const ProjectContext = createContext<{projectName: string | undefined, worldID : string, setProjectName: Function, isSwitching: boolean} | null>(null);
+export const ProjectContext = createContext<{projectName: string | undefined, worldID : string, setProjectName: Function, isSwitching: boolean, user : User} | null>(null);
 
-export const ProjectProvider = ({ children } : {children : ReactNode}) => {
+export const ProjectProvider = ({ children, user } : {children : ReactNode, user : User}) => {
   const [projectName, setProjectName] = useState<string>();
   const [isSwitching, setSwitching] = useState<boolean>(false);
   const [lastID,setLastID] = useState<string>();
@@ -37,7 +38,7 @@ export const ProjectProvider = ({ children } : {children : ReactNode}) => {
   }, [lastID]);
 
   return (
-    <ProjectContext.Provider value={{ projectName, worldID, setProjectName, isSwitching }}>
+    <ProjectContext.Provider value={{ projectName, worldID, setProjectName, isSwitching, user }}>
       {children}
     </ProjectContext.Provider>
   );
