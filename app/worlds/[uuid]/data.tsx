@@ -87,30 +87,27 @@ export function Data({ id } : {id : string}) {
         const insertedAt = data.length;
         dispatcher([...data, optimisticRow])
 
-        fetch(`/api/worlds/${id}`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({row : {input_number:color, input_text_value:description, input_is_ender_chest:isEnderChest}})
+        createClient().rpc('insert_project_data', { 
+            input_uuid: id, 
+            input_number: color, 
+            input_text_value: description, 
+            input_is_ender_chest: isEnderChest
         }).then(e=>{
-            if (e.ok) {
-                e.json().then(js => {
-                    const newID = js[0].new_id;
-                    dispatcher((prev : pseudoProjectData[]) => {
-                        const dataCopy = [...prev];
-                        dataCopy[insertedAt].id = newID;
-                        dataCopy[insertedAt].loaded = true;
-                        return dataCopy
-                    });
-                })
-            } else {
+            if (e.error) {
                 frequencySet.delete(color);
                 dispatcher((prev : pseudoProjectData[]) => {
                     return prev.toSpliced(insertedAt,1);
                 });
+            } else {
+                const newID = e.data[0].new_id;
+                dispatcher((prev : pseudoProjectData[]) => {
+                    const dataCopy = [...prev];
+                    dataCopy[insertedAt].id = newID;
+                    dataCopy[insertedAt].loaded = true;
+                    return dataCopy
+                });
             }
-        })
+        });
 
         CloseDialog();
     }
@@ -126,14 +123,8 @@ export function Data({ id } : {id : string}) {
         frequencySet.delete(+deletedRow.number)
         dispatcher(data.toSpliced(index,1));
 
-        fetch(`/api/worlds/${id}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({rowId : rowId})
-        }).then(e=>{
-            if (!e.ok) {
+        createClient().from('project_data').delete().eq('id', rowId).then(e=>{
+            if (e.error) {
                 frequencySet.add(+deletedRow.number)
                 dispatcher((prev : projectData[]) => {
                     return [
@@ -142,17 +133,8 @@ export function Data({ id } : {id : string}) {
                         ...prev.slice(index+1)
                     ]
                 });
-            }
-        }).catch(err=>{
-            frequencySet.add(+deletedRow.number)
-            dispatcher((prev : projectData[]) => {
-                return [
-                    ...prev.slice(0,index),
-                    deletedRow,
-                    ...prev.slice(index+1)
-                ]
-            });
-        })
+            } 
+        });
     }
 
     function OpenDialog() {
