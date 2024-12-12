@@ -91,7 +91,7 @@ export function Data() {
             </div>
             <div className="grid grid-cols-3 grid-flow-row auto-rows-fr gap-2 mt-2">
                 {loading ? <Skeleton /> : projectData ? projectData.map(e=>(
-                    <World key={e.project_name} project={e}/>
+                    <World key={e.project_uuid} project={e}/>
                 )) : <div>Failed to load worlds</div>}
             </div>
         </>
