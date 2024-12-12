@@ -9,10 +9,10 @@ import { Input } from "@/components/ui/input";
 import { Dialog } from "@/components/dialog";
 import { createClient } from "@/utils/supabase/client";
 
-
+type pseudoProject = project & {loaded? : boolean}
 
 export function Data() {
-    const [projectData, setProjectData] : [project[], Function] = useState([]);
+    const [projectData, setProjectData] : [pseudoProject[], Function] = useState([]);
     const [loading, setLoading] = useState(true);
 
     const dialogModal : RefObject<HTMLDialogElement | null> = useRef(null)
@@ -41,32 +41,26 @@ export function Data() {
 
         if (name === "") return;
         const tempId = `temp-${Math.random()}`; // Temporary ID for optimistic UI
-        const optimisticRow = { project_name:name, project_uuid:"", id: tempId };
+        const optimisticRow = { project_name:name, project_uuid:"", id: tempId, loaded:false };
         const insertedAt = projectData.length;
         setProjectData([...projectData, optimisticRow]);
 
-        fetch(`/api/worlds/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({name:name})
-        }).then(e=>{
-            if (e.ok) {
-                e.json().then(js => {
-                    const newID = js.project_uuid;
-                    setProjectData((prev : project[]) => {
-                        const dataCopy = [...prev];
-                        dataCopy[insertedAt].project_uuid = newID;
-                        return dataCopy
-                    });
-                })
-            } else {
-                setProjectData((prev : project[]) => {
+        createClient().from("projects").insert({project_name:name}).select().single().then(e=>{
+            if (e.error) {
+                setProjectData((prev : pseudoProject[]) => {
                     return prev.toSpliced(insertedAt,1);
                 });
+            } else {
+                const newID = e.data.project_uuid;
+                    setProjectData((prev : pseudoProject[]) => {
+                        const dataCopy = [...prev];
+                        dataCopy[insertedAt].project_uuid = newID;
+                        dataCopy[insertedAt].loaded = true;
+                        return dataCopy
+                    });
             }
         })
+
         CloseDialog();
     }
 
@@ -91,7 +85,7 @@ export function Data() {
             </div>
             <div className="grid grid-cols-3 grid-flow-row auto-rows-fr gap-2 mt-2">
                 {loading ? <Skeleton /> : projectData ? projectData.map(e=>(
-                    <World key={e.project_uuid} project={e}/>
+                    <World key={e.project_uuid} project={e} loaded={e.loaded ?? true}/>
                 )) : <div>Failed to load worlds</div>}
             </div>
         </>
