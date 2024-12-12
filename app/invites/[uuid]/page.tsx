@@ -12,7 +12,7 @@ export default async function Page({params} : {params : Promise<{uuid:string}>})
         const { data, error } : {data : {invite_id:string}[] | null, error : PostgrestError |null} = await supabase.rpc("delete_old_invite_links")
         
 
-        if (data && data.find(e=>e.invite_id === uuid)) {return <h1>This invite either doesn't exist, or has expired</h1>};
+        if (data && data.find(e=>e.invite_id === uuid)) {return <h1 className="mx-auto w-full">This invite either doesn't exist, or has expired</h1>};
     }
     
     await DeleteOldEntries()
@@ -24,11 +24,11 @@ export default async function Page({params} : {params : Promise<{uuid:string}>})
     ])
 
     if (!data) {
-        return <h1>This invite either doesn't exist, or has expired</h1>
-    }
+        return <h1 className="mx-auto w-full">This invite either doesn't exist, or has expired</h1>
+    } 
 
     if (!user) {
-        return redirect("/sign-in?invite=" + uuid);
+        return <h1 className="mx-auto w-full">Log in or make an account, then try again.</h1>
     }
 
     return redirect("/worlds")
