@@ -6,9 +6,9 @@ type projectData = {
 }
 
 type projectMember = {
-    id: string,
     user_id: string,
-    user_role: string
+    user_role: number,
+    user_name: string
 }
 
 type project = {
