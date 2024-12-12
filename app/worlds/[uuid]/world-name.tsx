@@ -15,19 +15,21 @@ export function WorldName() {
     }, [path, projectContext?.projectName])
 
     return ( 
-        projectContext?.isSwitching ? 
-        <Loading /> :
-        pathData.map((route,index) => {
-            if (route === pathData.at(-1) && index > 0) {
-                return <span key={index}>/{route}</span>
-            } else if (index > 0) {
-                return <Link key={index} href={`/worlds/${projectContext?.worldID}/${route}`}>/{route}</Link>
-            } else if (pathData.length > 1) {
-                return <Link key={index} href={`/worlds/${projectContext?.worldID}`}>{route}</Link>
-            } else {
-                return <span key={index}>{route}</span>
-            }
-        })
+        <div>
+            {projectContext?.isSwitching || projectContext?.projectName === undefined ? 
+            <Loading /> :
+            pathData.map((route,index) => {
+                if (route === pathData.at(-1) && index > 0) {
+                    return <span key={index} className="text-ellipsis">/{route}</span>
+                } else if (index > 0) {
+                    return <Link key={index} href={`/worlds/${projectContext?.worldID}/${route}`}>/<span className="underline">{route}</span></Link>
+                } else if (pathData.length > 1) {
+                    return <Link key={index} className="font-bold underline" href={`/worlds/${projectContext?.worldID}`}>{route}</Link>
+                } else {
+                    return <span key={index} className="font-bold">{route}</span>
+                }
+            })}
+        </div>
     )
 }
 

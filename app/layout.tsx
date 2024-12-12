@@ -44,7 +44,7 @@ export default function RootLayout({
                   </div>
                 </div>
               </nav>
-              <div className="flex-1 flex-col gap-20 max-w-5xl w-full">
+              <div className="flex-1 flex-col px-4 gap-20 max-w-5xl w-full">
                 {children}
               </div>
               <footer className="w-full border-t mx-auto text-center text-xs gap-8 p-4 px-5">

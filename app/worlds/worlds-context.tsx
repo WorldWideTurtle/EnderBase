@@ -2,14 +2,21 @@
 
 import { createClient } from '@/utils/supabase/client';
 import { usePathname } from 'next/navigation';
-import React, { createContext, useState, useEffect, ReactNode } from 'react';
+import React, { createContext, useState, useEffect, ReactNode, useRef } from 'react';
 
 export const ProjectContext = createContext<{projectName: string | undefined, worldID : string, setProjectName: Function, isSwitching: boolean} | null>(null);
 
 export const ProjectProvider = ({ children } : {children : ReactNode}) => {
   const [projectName, setProjectName] = useState<string>();
   const [isSwitching, setSwitching] = useState<boolean>(false);
+  const [lastID,setLastID] = useState<string>();
   const worldID = usePathname().split("/")[2];
+
+  useEffect(()=>{
+    if (worldID && worldID !== lastID) {
+      setLastID(worldID)
+    }
+  },[worldID])
 
   useEffect(() => {
     const fetchProjectName = async () => {
@@ -27,7 +34,7 @@ export const ProjectProvider = ({ children } : {children : ReactNode}) => {
       }
     };
     fetchProjectName();
-  }, [worldID]);
+  }, [lastID]);
 
   return (
     <ProjectContext.Provider value={{ projectName, worldID, setProjectName, isSwitching }}>
