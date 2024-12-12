@@ -16,6 +16,22 @@ export default function page() {
     const [searchInput, setSearchInput] = useState<string>()
     const worldContext = useContext(ProjectContext)
     const currentUser = useRef<projectMember>(null);
+    const [currentLink, setCurrentLink] = useState<string>()
+    const [fetching, setFetching] = useState<boolean>(false)
+
+    function GetLink() {
+        if (!worldContext?.worldID || currentLink) return;
+
+        setFetching(true)
+        createClient().rpc("manage_invite_link",{in_project_uuid:worldContext?.worldID}).then(e=>{
+            setFetching(false)
+            if (!e.error) {
+                setCurrentLink(e.data)
+            } else {
+                console.log(e.error)
+            }
+        })
+    }
 
     const searchRegex = useCallback(()=>{
         return new RegExp(searchInput ?? "","gi")
@@ -74,7 +90,10 @@ export default function page() {
                     <div>
                         <h3 className="text-lg">Add Members</h3>
                         <p className="opacity-85 leading-4">To add users, generate an invite link an send it to them. A link lasts 15 minutes and anyone with it can join your world. You can remove them at any point.</p>
-                        <GenerateInviteButton />
+                        <div className="flex">
+                            <Input readOnly value={currentLink ? `${window.location.origin}/invites/${currentLink}` : "..."}/>
+                            <Button onClick={GetLink} title="Generate new link" disabled={fetching} type="submit" variant={"default"}><LucideRepeat></LucideRepeat></Button>
+                        </div>
                     </div>
                     <div>
                         <h3 className="text-lg">Manage Members</h3>
@@ -107,33 +126,6 @@ function MemberSkeleton() {
     return (new Array(4)).fill(0).map((e,i)=>(
         <span key={i} className="w-full inline-block animate-pulse text-transparent bg-input">Loading</span>
     ))
-}
-
-function GenerateInviteButton() {
-    const [currentLink, setCurrentLink] = useState<string>()
-    const [fetching, setFetching] = useState<boolean>(false)
-    const worldContext = useContext(ProjectContext)
-
-    function GetLink() {
-        if (!worldContext?.worldID || currentLink) return;
-
-        setFetching(true)
-        createClient().rpc("manage_invite_link",{in_project_uuid:worldContext?.worldID}).then(e=>{
-            setFetching(false)
-            if (!e.error) {
-                setCurrentLink(e.data)
-            } else {
-                console.log(e.error)
-            }
-        })
-    }
-
-    return (
-        <div className="flex">
-            <Input readOnly value={currentLink ? `${window.location.origin}/invites/${currentLink}` : "..."}/>
-            <Button onClick={GetLink} title="Generate new link" disabled={fetching} type="submit" variant={"default"}><LucideRepeat></LucideRepeat></Button>
-        </div>
-    )
 }
 
 function ChangeWorldNameForm() {
