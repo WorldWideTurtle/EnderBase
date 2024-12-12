@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { projectMember } from "@/db/schemes";
 import { LucideRepeat, LucideTrash } from "lucide-react";
+import { ConfirmDialog } from "@/components/confirm-dialog";
 
 export default function page() {
     const [memberData, setMemberData] = useState<projectMember[]>()
@@ -165,6 +166,7 @@ function ChangeWorldNameForm() {
 
 function DeleteWorldButton({currentUser} : {currentUser : projectMember | null}) {
     const worldContext = useContext(ProjectContext)
+    const dialog = useRef<HTMLDialogElement>(null);
     const router = useRouter()
 
     function DeleteWorld() {
@@ -179,10 +181,15 @@ function DeleteWorldButton({currentUser} : {currentUser : projectMember | null})
         }
     }
 
-    return (
-        (currentUser && (currentUser.user_role > 0)) ? 
-        <Button variant={"destructive"} onClick={DeleteWorld} disabled={worldContext?.isSwitching || worldContext?.projectName === undefined} className="w-full">Delete world</Button> :
-        <div><Button variant={"destructive"} disabled={true} className="w-full bg-input animate-pulse">Loading</Button></div>
-    )
+    function submitDelete() {
+        dialog.current?.showModal();
+    }
+
+    return (<>
+            <ConfirmDialog ref={dialog} title="Confirm Delete" text="This can not be undone. It will remove all data connected to this world." confirmText={"DELETE " + worldContext?.projectName} callback={DeleteWorld} />
+            {(currentUser && (currentUser.user_role > 0)) ? 
+            <Button variant={"destructive"} onClick={submitDelete} disabled={worldContext?.isSwitching || worldContext?.projectName === undefined} className="w-full">Delete world</Button> :
+            <div><Button variant={"destructive"} disabled={true} className="w-full bg-input animate-pulse">Loading</Button></div>}
+        </>)
     
 }
