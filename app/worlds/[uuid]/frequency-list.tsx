@@ -11,7 +11,7 @@ type FrequencyProps = {
 export function FrequencyList({data, onClick} : FrequencyProps) {
     return (
         data.map(e=>(
-            <div key={e.number} className="flex justify-between gap-1 p-1 hover:bg-input/50 rounded-md" style={{
+            <div key={e.number} className="flex justify-between gap-1 p-1 hover:bg-input/50 rounded-md group" style={{
                 opacity: e.loaded === false ? .5 : 1
             }}>
                 <div className="grid-cols-[auto_1fr] grid items-center gap-4">
@@ -20,7 +20,7 @@ export function FrequencyList({data, onClick} : FrequencyProps) {
                     </div>
                     <h4 className="text-xl text-ellipsis">{e.text_value}</h4>
                 </div>
-                <Button variant={"ghost"} className="p-0 aspect-square" disabled={e.loaded === false ? true : false} onClick={()=>{onClick(+e.id)}}><LucideTrash className="text-destructive" /></Button>
+                <Button variant={"ghost"} className="p-0 aspect-square" disabled={e.loaded === false ? true : false} onClick={()=>{onClick(+e.id)}}><LucideTrash className="text-destructive opacity-0 group-hover:!opacity-100" /></Button>
             </div>
         ))
     )

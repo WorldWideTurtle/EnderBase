@@ -80,9 +80,9 @@ export default function page() {
                         <Input type="text" placeholder="Search member" onChange={e=>setSearchInput(e.target.value)}></Input>
                         <ul className="flex flex-col gap-1 mt-4 divide-x-2 divide-input" aria-label="List of project members">
                             {memberData ? filteredList().map(e=>(
-                                <li key={e.user_id} className="flex justify-between gap-2 hover:bg-input/30 p-1">
+                                <li key={e.user_id} className="flex justify-between gap-2 hover:bg-input/30 p-1 group">
                                     <span className="text-ellipsis opacity-85" >{e.user_name}</span>
-                                    <Button title="Delete member from world" className="p-0 h-fit" variant={"ghost"} onClick={() => RemoveMember(e.user_id)}><LucideTrash className="text-destructive"></LucideTrash></Button>
+                                    <Button title="Delete member from world" className="p-0 h-fit" variant={"ghost"} onClick={() => RemoveMember(e.user_id)}><LucideTrash className="text-destructive opacity-0 group-hover:!opacity-100"></LucideTrash></Button>
                                 </li>
                             )) : <MemberSkeleton />}
                         </ul>
