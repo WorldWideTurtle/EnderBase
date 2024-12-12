@@ -18,11 +18,11 @@ export default async function AuthButton() {
     <ProfileIcon user={user}/>
   ) : (
     <div className="flex gap-2">
-      <Button asChild size="sm" variant={"outline"}>
+      <Button aria-label="Sign in" asChild size="sm" variant={"outline"} className="translate-x-4 pr-1">
         <Link href="/sign-in">Sign in</Link>
       </Button>
-      <Button asChild size="sm" variant={"default"}>
-        <Link href="/sign-up">Sign up</Link>
+      <Button aria-label="Sign up" asChild size="sm" variant={"default"}>
+        <Link href="/sign-up"> up</Link>
       </Button>
     </div>
   );
