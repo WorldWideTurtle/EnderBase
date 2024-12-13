@@ -17,13 +17,8 @@ export default async function AuthButton() {
   return user ? (
     <ProfileIcon user={user}/>
   ) : (
-    <div className="flex gap-2">
-      <Button aria-label="Sign in" asChild size="sm" variant={"outline"} className="translate-x-4 pr-1">
-        <Link href="/sign-in">Sign in</Link>
-      </Button>
-      <Button aria-label="Sign up" asChild size="sm" variant={"default"}>
-        <Link href="/sign-up"> up</Link>
-      </Button>
-    </div>
+    <Button aria-label="Sign in" asChild size="sm" variant={"outline"}>
+      <Link href="/sign-in">Sign in</Link>
+    </Button>
   );
 }
