@@ -1,4 +1,5 @@
 import { signInAction } from "@/app/actions";
+import { GithubAuth } from "@/components/auth/githubAuth";
 import { FormMessage, Message } from "@/components/form-message";
 import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
@@ -31,6 +32,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
         </SubmitButton>
         <FormMessage message={searchParams} />
       </div>
+      <GithubAuth />
     </form>
   );
 }
