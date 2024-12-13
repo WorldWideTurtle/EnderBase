@@ -58,6 +58,19 @@ export const signInAction = async (formData: FormData) => {
   return redirect("/worlds");
 };
 
+export async function signInWithGithub() {
+  const supabase = await createClient();
+  const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+  })
+
+  if (error) {
+    return encodedRedirect("error", "/sign-in", error.message);
+  }
+
+  return redirect("/worlds");
+}
+
 export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();

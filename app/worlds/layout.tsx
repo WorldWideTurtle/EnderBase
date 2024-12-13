@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 import { ProjectProvider } from "./worlds-context"
 import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
+import { encodedRedirect } from "@/utils/utils";
 
 type LayoutProps = {
     children: ReactNode
@@ -14,7 +14,7 @@ export default async function layout(props : LayoutProps) {
     } = await supabase.auth.getUser();
 
     if (!user) {
-        return redirect("/sign-in");
+        return encodedRedirect("error","/sign-in","Sign in first");
     }
 
     return (
