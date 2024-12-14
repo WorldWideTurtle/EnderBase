@@ -1,3 +1,4 @@
+import { DiscordAuth } from "@/components/auth/discord-auth";
 import { GithubAuth } from "@/components/auth/github-auth";
 import { GoogleAuth } from "@/components/auth/google-auth";
 import { FormMessage, Message } from "@/components/form-message";
@@ -13,6 +14,7 @@ export default async function Login(props: { searchParams: Promise<Message> }) {
       <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
         <GithubAuth />
         <GoogleAuth />
+        <DiscordAuth />
         <FormMessage message={searchParams} />
       </div>
       

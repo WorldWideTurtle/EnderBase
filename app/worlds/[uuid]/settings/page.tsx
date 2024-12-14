@@ -37,12 +37,8 @@ export default function page() {
         return new RegExp(searchInput ?? "","gi")
     }, [searchInput])
 
-    function getName(user : projectMember) {
-        return (user.user_name === null ? user.name : user.user_name)
-    }
-
     const filteredList = useCallback(()=>{
-        return memberData ? memberData.filter(e=>(e.user_id !== worldContext?.user.id) && getName(e)!.match(searchRegex())) : []
+        return memberData ? memberData.filter(e=>(e.user_id !== worldContext?.user.id) && e.name.match(searchRegex())) : []
     }, [searchRegex(),memberData])
 
     useEffect(()=>{
@@ -106,7 +102,7 @@ export default function page() {
                         <ul className="flex flex-col gap-1 mt-4 divide-x-2 divide-input" aria-label="List of project members">
                             {memberData ? filteredList().map(e=>(
                                 <li key={e.user_id} className="flex justify-between gap-2 hover:bg-input/30 p-1 group">
-                                    <span className="text-ellipsis opacity-85" >{getName(e)}</span>
+                                    <span className="text-ellipsis opacity-85" >{e.name}</span>
                                     <Button title="Delete member from world" className="p-0 h-fit" variant={"ghost"} onClick={() => RemoveMember(e.user_id)}><LucideTrash className="text-destructive opacity-0 group-hover:!opacity-100"></LucideTrash></Button>
                                 </li>
                             )) : <MemberSkeleton />}
@@ -184,7 +180,7 @@ function DeleteWorldButton({currentUser} : {currentUser : projectMember | null})
 
     return (<>
             <ConfirmDialog ref={dialog} title="Confirm Delete" text="This can not be undone. It will remove all data connected to this world." confirmText={"DELETE " + worldContext?.projectName} callback={DeleteWorld} />
-            {(currentUser && (currentUser.user_role > 0)) ? 
+            {currentUser ? 
             <Button variant={"destructive"} onClick={submitDelete} disabled={worldContext?.isSwitching || worldContext?.projectName === undefined} className="w-full">Delete world</Button> :
             <div><Button variant={"destructive"} disabled={true} className="w-full bg-input animate-pulse">Loading</Button></div>}
         </>)
