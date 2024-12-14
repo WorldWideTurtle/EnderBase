@@ -1,8 +1,8 @@
 import { AuthProvider } from "@/components/auth/auth-provider";
 import { FormMessage, Message } from "@/components/form-message";
-import GithubIcon from "@/icons/github-logo.svg"
-import GoogleIcon from "@/icons/google-logo.svg"
-import DiscordIcon from "@/icons/discord-logo.svg"
+import GithubIcon from "@/Icons/github-logo.svg"
+import GoogleIcon from "@/Icons/google-logo.svg"
+import DiscordIcon from "@/Icons/discord-logo.svg"
 
 export default async function Login(props: { searchParams: Promise<Message> }) {
   const searchParams = await props.searchParams;
