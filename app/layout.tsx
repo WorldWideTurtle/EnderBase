@@ -6,6 +6,8 @@ import Link from "next/link";
 import "./globals.css";
 import { TimeBasedText } from "@/components/time-based-text";
 import LogoIcon from "@/Icons/Logo.svg"
+import { cookies } from "next/headers";
+import { CookieBanner } from "@/components/cookie-banner";
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
@@ -17,11 +19,13 @@ export const metadata = {
   description: "The easiest way to keep track of those color combinations.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const cookieStore = await cookies();
+  
   return (
     <html lang="en" className={GeistSans.className} suppressHydrationWarning>
       <body className="bg-background text-foreground">
@@ -52,6 +56,7 @@ export default function RootLayout({
               </footer>
             </div>
           </main>
+          {!cookieStore.has("sb-agreedToCookies") ? <CookieBanner/> : ""}
         </ThemeProvider>
       </body>
     </html>
