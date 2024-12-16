@@ -101,7 +101,7 @@ export default function page() {
                     <div>
                         <h3 className="text-lg">Add Members</h3>
                         <p className="opacity-85 leading-4">To add users, generate an invite link an send it to them. A link lasts 15 minutes and anyone with it can join your world. You can remove them at any point.</p>
-                        <div className="flex border-input border-[1px] rounded-md">
+                        <div className="flex border-input border-[1px] rounded-md mt-1">
                             <Input className="border-none" readOnly value={currentLink ? GetFullLink() : "..."}/>
                             <Button onClick={CopyToClipboard} title="Generate new link" disabled={currentLink ? false : true} type="submit" variant={"ghost"} size={"icon"}><LucideCopy></LucideCopy></Button>
                             <Button onClick={GetLink} title="Generate new link" disabled={fetching} type="submit" variant={"ghost"} size={"icon"}><LucideRepeat></LucideRepeat></Button>
