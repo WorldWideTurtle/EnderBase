@@ -146,7 +146,7 @@ function ChangeWorldNameForm() {
 
     function ChangeWorldName(formData : FormData) {
         let newName = formData.get("newName") as string;
-        if (newName.length > 2 && newName.length < 48) {
+        if (newName.length > 2 && newName.length <= 48) {
             createClient().from("projects").update({project_name:newName}).eq("project_uuid",worldContext?.worldID).then(e=>{
                 if (!e.error) {
                     worldContext?.setProjectName(newName)
