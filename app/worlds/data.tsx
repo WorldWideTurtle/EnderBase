@@ -1,6 +1,6 @@
 'use client'
 
-import { RefObject, useContext, useEffect, useRef, useState } from "react";
+import { RefObject, useEffect, useRef, useState } from "react";
 import { World } from "@/components/world";
 import { project } from "@/db/schemes";
 import { Button } from "@/components/ui/button";
@@ -8,15 +8,12 @@ import { LucidePlus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog } from "@/components/dialog";
 import { createClient } from "@/utils/supabase/client";
-import { ProjectContext } from "./worlds-context";
 import { WorldIcon, WorldIconColors } from "@/components/world-icon";
-import { Content, Root, Trigger } from "@radix-ui/react-dropdown-menu";
 
 
 type pseudoProject = project & {loaded? : boolean}
 
 export function Data() {
-    const worldContext = useContext(ProjectContext)
     const [projectData, setProjectData] : [pseudoProject[], Function] = useState([]);
     const [loading, setLoading] = useState<boolean>(true);
 
@@ -80,21 +77,13 @@ export function Data() {
         <>
             <Dialog shouldClose={false} ref={dialogModal} title="Add world">
                 <form action={AddWorld} className="mt-8 flex flex-col gap-4">
+                    <div className="grid w-full md:grid-cols-6 lg:grid-cols-7 grid-cols-4 p-2 overflow-y-scroll gap-1 h-32 md:h-40">
+                        {WorldIconColors.map((e,i)=>(
+                            <WorldIcon onClick={()=>iconCallback(i)} key={i} className="group size-full cursor-pointer" iconIndex={i}></WorldIcon>
+                        ))}
+                    </div>
                     <div className="flex w-full items-center gap-2">
-                        <Root>
-                            <Trigger asChild>
-                                <button>
-                                    <WorldIcon iconIndex={icon} className="cursor-pointer"></WorldIcon>
-                                </button>
-                            </Trigger>
-                                <Content className="rounded-md border-input border p-2 bg-card">
-                                    <div className="grid grid-cols-7 p-2 w-fit max-w-96 overflow-y-auto gap-1 contain-layout">
-                                        {WorldIconColors.map((e,i)=>(
-                                            <WorldIcon onClick={()=>iconCallback(i)} key={i} className="group cursor-pointer" iconIndex={i}></WorldIcon>
-                                        ))}
-                                    </div>
-                                </Content>
-                        </Root>
+                        <WorldIcon iconIndex={icon}></WorldIcon>
                         <Input 
                             name="name" 
                             type="text" 
