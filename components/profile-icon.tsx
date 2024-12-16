@@ -1,5 +1,5 @@
 import { Content, Item, Portal, Root, Trigger } from "@radix-ui/react-dropdown-menu"
-import { LucideCircleUserRound } from "lucide-react"
+import { icons, LucideCircleUserRound } from "lucide-react"
 import { Button } from "./ui/button"
 import { signOutAction } from "@/app/actions"
 import { User } from "@supabase/supabase-js"
@@ -9,8 +9,8 @@ export function ProfileIcon({user} : {user : User}) {
     return (
         <Root>
             <Trigger asChild>
-                <Button variant={"outline"}>
-                    <LucideCircleUserRound></LucideCircleUserRound>
+                <Button variant={"ghost"} className="p-1" size={"icon"}>
+                    <LucideCircleUserRound className="w-full h-full stroke-[1px]"></LucideCircleUserRound>
                 </Button>
             </Trigger>
             <Portal>

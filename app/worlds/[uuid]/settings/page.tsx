@@ -8,7 +8,7 @@ import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { projectMember } from "@/db/schemes";
-import { LucideRepeat, LucideTrash } from "lucide-react";
+import { LucideCopy, LucideRepeat, LucideTrash } from "lucide-react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 
 export default function page() {
@@ -74,6 +74,16 @@ export default function page() {
             }
         })
     }
+
+    function CopyToClipboard() {
+        if (navigator.clipboard && currentLink) {
+            navigator.clipboard.writeText(GetFullLink())
+        }
+    }
+
+    function GetFullLink() {
+        return `${window.location.origin}/invites/${currentLink}`
+    }
     
 
     return (
@@ -91,9 +101,10 @@ export default function page() {
                     <div>
                         <h3 className="text-lg">Add Members</h3>
                         <p className="opacity-85 leading-4">To add users, generate an invite link an send it to them. A link lasts 15 minutes and anyone with it can join your world. You can remove them at any point.</p>
-                        <div className="flex">
-                            <Input readOnly value={currentLink ? `${window.location.origin}/invites/${currentLink}` : "..."}/>
-                            <Button onClick={GetLink} title="Generate new link" disabled={fetching} type="submit" variant={"default"}><LucideRepeat></LucideRepeat></Button>
+                        <div className="flex border-input border-[1px] rounded-md">
+                            <Input className="border-none" readOnly value={currentLink ? GetFullLink() : "..."}/>
+                            <Button onClick={CopyToClipboard} title="Generate new link" disabled={currentLink ? false : true} type="submit" variant={"ghost"} size={"icon"}><LucideCopy></LucideCopy></Button>
+                            <Button onClick={GetLink} title="Generate new link" disabled={fetching} type="submit" variant={"ghost"} size={"icon"}><LucideRepeat></LucideRepeat></Button>
                         </div>
                     </div>
                     <div>
@@ -103,7 +114,7 @@ export default function page() {
                             {memberData ? filteredList().map(e=>(
                                 <li key={e.user_id} className="flex justify-between gap-2 hover:bg-input/30 p-1 group">
                                     <span className="text-ellipsis opacity-85" >{e.name}</span>
-                                    <Button title="Delete member from world" className="p-0 h-fit" variant={"ghost"} onClick={() => RemoveMember(e.user_id)}><LucideTrash className="text-destructive opacity-0 group-hover:!opacity-100"></LucideTrash></Button>
+                                    <Button title="Delete member from world" size={"icon"} variant={"ghost"} onClick={() => RemoveMember(e.user_id)}><LucideTrash className="text-destructive opacity-0 group-hover:!opacity-100"></LucideTrash></Button>
                                 </li>
                             )) : <MemberSkeleton />}
                         </ul>

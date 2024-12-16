@@ -42,7 +42,7 @@ export default async function RootLayout({
                   <div className="flex gap-5 items-center font-semibold">
                     <Link href={"/"} className="font-bold md:text-xl grid grid-cols-[auto_auto] items-center h-full gap-1"> <LogoIcon className="h-full w-auto"/> <span className="py-2 hidden md:inline">EnderBase</span></Link>
                   </div>
-                  <div className="flex items-center">
+                  <div className="flex items-center gap-1">
                     <ThemeSwitcher />
                     <HeaderAuth />
                   </div>

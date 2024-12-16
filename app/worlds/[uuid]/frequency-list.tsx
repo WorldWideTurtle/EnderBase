@@ -20,7 +20,7 @@ export function FrequencyList({data, onClick} : FrequencyProps) {
                     </div>
                     <h4 className="text-xl text-ellipsis">{e.text_value}</h4>
                 </div>
-                <Button variant={"ghost"} className="p-0 aspect-square" disabled={e.loaded === false ? true : false} onClick={()=>{onClick(+e.id)}}><LucideTrash className="text-destructive opacity-0 group-hover:!opacity-100" /></Button>
+                <Button variant={"ghost"} size={"icon"} disabled={e.loaded === false ? true : false} onClick={()=>{onClick(+e.id)}}><LucideTrash className="text-destructive opacity-0 group-hover:!opacity-100" /></Button>
             </div>
         ))
     )
