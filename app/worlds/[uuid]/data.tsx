@@ -215,7 +215,7 @@ export function Data({ id } : {id : string}) {
                             dataFetchError.current === null ? 
                                 chestData.length > 0 ? 
                                     <FrequencyList data={chestData} onClick={DeleteRow}/> : 
-                                    <div className="w-full text-center">None yet, start by adding one</div> : 
+                                    <p className="opacity-70 text-sm w-full text-center">None yet, start by adding one</p> : 
                                 <div>Error loading frequencies</div>}
                     </div>
                 </Content>
@@ -230,7 +230,7 @@ export function Data({ id } : {id : string}) {
                             dataFetchError.current === null ? 
                                 tankData.length > 0 ? 
                                     <FrequencyList data={tankData} onClick={DeleteRow}/> : 
-                                    <div className="w-full text-center">None yet, start by adding one</div> : 
+                                    <p className="opacity-70 text-sm w-full text-center">None yet, start by adding one</p> : 
                                 <div>Error loading frequencies</div>}
                     </div>
                 </Content>

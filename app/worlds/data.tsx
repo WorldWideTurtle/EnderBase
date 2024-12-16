@@ -101,9 +101,9 @@ export function Data() {
                 <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading}>Add new <LucidePlus /></Button>
             </div>
             <div className="grid lg:grid-cols-3 sm:grid-cols-2 grid-flow-row auto-rows-fr gap-2 mt-2">
-                {loading ? <Skeleton /> : projectData ? projectData.map(e=>(
+                {loading ? <Skeleton /> : projectData ? projectData.length > 0 ? projectData.map(e=>(
                     <World key={e.project_uuid} project={e} loaded={e.loaded ?? true}/>
-                )) : <div>Failed to load worlds</div>}
+                )) : <p className="opacity-70 text-sm">No worlds. Make or join one to get started</p> : <div>Failed to load worlds</div>}
             </div>
         </>
     )

@@ -111,12 +111,12 @@ export default function page() {
                         <h3 className="text-lg">Manage Members</h3>
                         <Input type="text" placeholder="Search member" onChange={e=>setSearchInput(e.target.value)}></Input>
                         <ul className="flex flex-col gap-1 mt-4 divide-x-2 divide-input" aria-label="List of project members">
-                            {memberData ? filteredList().map(e=>(
+                            {memberData ? memberData.length > 1 ? filteredList.length > 0 ? filteredList().map(e=>(
                                 <li key={e.user_id} className="flex justify-between gap-2 hover:bg-input/30 p-1 group">
                                     <span className="text-ellipsis opacity-85" >{e.name}</span>
                                     <Button title="Delete member from world" size={"icon"} variant={"ghost"} onClick={() => RemoveMember(e.user_id)}><LucideTrash className="text-destructive opacity-0 group-hover:!opacity-100"></LucideTrash></Button>
                                 </li>
-                            )) : <MemberSkeleton />}
+                            )) : <p className="text-sm opacity-70 text-center w-full">None found</p> : <p className="text-sm opacity-70 text-center w-full">None yet, invite some.</p> : <MemberSkeleton />}
                         </ul>
                     </div>
                 </div>
