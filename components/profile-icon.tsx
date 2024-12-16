@@ -16,7 +16,7 @@ export function ProfileIcon({user} : {user : User}) {
             <Portal>
                 <Content className="rounded-md border-input border p-2 bg-card grid grid-cols-1 grid-flow-row auto-rows-auto">
                     <Button type="submit" variant={"ghost"} className="justify-start p-2">
-                        <Link href={`/users/${user.user_metadata.sub}`}>Profile</Link>
+                        <Link href={`/profile`}>Profile</Link>
                     </Button>
                     <form action={signOutAction}>
                         <Button type="submit" variant={"ghost"} className="justify-start p-2">

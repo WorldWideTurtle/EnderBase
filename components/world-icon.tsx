@@ -87,7 +87,6 @@ export function WorldIcon(props : Props) {
         //@ts-ignore
         return rgbToHex.apply({},color.map(c=>~~((c-(iconColor[2] ?? 20)) * Math.pow(0.85,i))))
     })
-    console.log(brightColors)
     const setIcon = [
         ...brightColors,
         ...darkColors
