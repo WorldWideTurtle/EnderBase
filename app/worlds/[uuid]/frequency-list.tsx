@@ -16,11 +16,11 @@ export function FrequencyList({data, onClick} : FrequencyProps) {
             }}>
                 <div className="grid-cols-[auto_1fr] grid items-center gap-4">
                     <div className="flex gap-1">
-                        {CreateColorSwatches(+e.number)}
+                        {CreateColorSwatches(e.number)}
                     </div>
                     <h4 className="text-xl text-ellipsis">{e.text_value}</h4>
                 </div>
-                <Button variant={"ghost"} size={"icon"} disabled={e.loaded === false ? true : false} onClick={()=>{onClick(+e.id)}}><LucideTrash className="text-destructive opacity-0 group-hover:!opacity-100" /></Button>
+                <Button variant={"ghost"} size={"icon"} disabled={e.loaded === false ? true : false} onClick={()=>{onClick(e.id)}}><LucideTrash className="text-destructive opacity-0 group-hover:!opacity-100" /></Button>
             </div>
         ))
     )

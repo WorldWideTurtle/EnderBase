@@ -1,6 +1,6 @@
 type projectData = {
-    id: string,
-    number: string,
+    id: number,
+    number: number,
     text_value: string,
     is_ender_chest: boolean
 }
@@ -12,7 +12,8 @@ type projectMember = {
 
 type project = {
     project_uuid: string,
-    project_name: string
+    project_name: string,
+    icon_id: number
 }
 
 type userData = {
