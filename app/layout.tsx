@@ -35,7 +35,7 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <main className="min-h-dvh flex flex-col items-center">
+          <main className="min-h-dvh flex flex-col items-center relative">
             <div className="flex-1 w-full flex flex-col gap-2 items-center">
               <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
                 <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
