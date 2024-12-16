@@ -30,11 +30,12 @@ export const ConfirmDialog = forwardRef<HTMLDialogElement,DialogProps>((props, r
 
     return (
       <Dialog ref={localRef} title={props.title}>
-        <p className="mt-2">{props.text}</p>
-        <label htmlFor="">Type <span className="font-bold">{props.confirmText}</span> to continue</label>
+        <p className="mt-2 max-w-96">{props.text}</p>
+        <div className="mt-4"></div>
+        <label>Type <span className="font-bold">{props.confirmText}</span> to continue</label>
         <form action={callback}>
             <Input name="confirm" type="text" onChange={(e)=>setInput(e.target.value ?? "")} defaultValue={input}/>
-            <Button className="w-full mt-1" disabled={input !== props.confirmText} variant={"destructive"} type="submit">Confirm</Button>
+            <Button className="w-full mt-2" disabled={input !== props.confirmText} variant={"destructive"} type="submit">Confirm</Button>
         </form>
       </Dialog>
     );

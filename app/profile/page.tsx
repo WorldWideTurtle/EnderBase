@@ -1,8 +1,10 @@
+import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";
 import { createClient as CC } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@supabase/supabase-js";
 import { redirect } from "next/navigation";
+import { DeleteUser } from "./delete-user";
 
 export default async function Page() {
     const supabase = await CC();
@@ -22,9 +24,7 @@ export default async function Page() {
             data: { user },
         } = await supabase.auth.getUser();
 
-        if (!user) {
-            return encodedRedirect("error","/sign-in","Sign in first");
-        }
+        if (!user) return
 
         const supabaseAdmin = await createClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!, 
@@ -44,9 +44,7 @@ export default async function Page() {
         <div className="grid grid-flow-row auto-rows-auto m-auto max-w-[30rem] gap-8">
             <h2 className="text-lg">Hey {uName}</h2>
             <div className="flex flex-col gap-2">
-                <form action={deleteUser}>
-                    <Button type="submit" variant={"destructive"}>Delete User</Button>
-                </form>
+                <DeleteUser callback={deleteUser}></DeleteUser>
             </div>
         </div>
     )
