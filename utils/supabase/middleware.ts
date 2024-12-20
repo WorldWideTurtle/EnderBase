@@ -1,5 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
+import { jwtVerify } from "jose";
 import { type NextRequest, NextResponse } from "next/server";
+import { JWT_KEY } from "./jwt-utils";
 
 export const updateSession = async (request: NextRequest) => {
     // Create an unmodified response
@@ -35,7 +37,9 @@ export const updateSession = async (request: NextRequest) => {
 
     // This will refresh session if expired - required for Server Components
     // https://supabase.com/docs/guides/auth/server-side/nextjs
-    const user = await supabase.auth.getUser();
+    const session = await supabase.auth.getSession();
+    const access_token = session.data.session?.access_token as string
+    const { payload } = access_token === undefined ? {payload:null} : await jwtVerify(access_token,JWT_KEY); 
 
     if (request.cookies.get("sb-agreedToCookies")?.value != "1") {
       request.cookies.getAll().forEach(e => {
@@ -51,28 +55,12 @@ export const updateSession = async (request: NextRequest) => {
       })
     }
 
-
-  const urlPaths = request.nextUrl.pathname.split("/")
-  if (urlPaths[1] === "worlds") {
-    const {data} = await supabase.rpc("get_user_role_in_project",{p_uuid:urlPaths[2]})
-
-    if (urlPaths.length > 2 && data === null) {
-      request.nextUrl.pathname = "/worlds"
-      return NextResponse.redirect(request.nextUrl)
-    }
-
-    if (urlPaths.length > 3 && data !== 1) {
-      request.nextUrl.pathname = "/worlds/" + urlPaths[2]
-      return NextResponse.redirect(request.nextUrl)
-    }
-  }
-
     // protected routes
-    if (request.nextUrl.pathname.startsWith("/worlds") && user.error) {
+    if (request.nextUrl.pathname.startsWith("/worlds") && (payload === null)) {
       return NextResponse.redirect(new URL("/sign-in", request.url));
     }
 
-    if (request.nextUrl.pathname === "/" && !user.error) {
+    if (request.nextUrl.pathname === "/" && (payload !== null)) {
       return NextResponse.redirect(new URL("/worlds", request.url));
     }
 

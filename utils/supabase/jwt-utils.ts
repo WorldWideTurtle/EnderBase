@@ -1,0 +1,1 @@
+export const JWT_KEY = new TextEncoder().encode(process.env.SUPABASE_JWT_SECRET!)
