@@ -1,0 +1,20 @@
+.animate {
+    --start-x:0px;
+    --start-y:0px;
+    --end-x:256px;
+    --end-y:256px;
+    animation: animation 300s linear;
+    animation-iteration-count: infinite;
+
+    image-rendering: pixelated;
+}
+
+@keyframes animation {
+    0% {
+        background-position: var(--start-x) var(--start-y);
+    }
+
+    100% {
+        background-position: var(--end-x) var(--end-y);
+    }
+}

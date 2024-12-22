@@ -37,7 +37,7 @@ export default async function RootLayout({
         >
           <main className="min-h-dvh flex flex-col items-center relative">
             <div className="flex-1 w-full flex flex-col gap-2 items-center">
-              <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
+              <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16 bg-background">
                 <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
                   <div className="flex gap-5 items-center font-semibold">
                     <Link href={"/"} className="font-bold md:text-xl grid grid-cols-[auto_auto] items-center h-full gap-1"> <LogoIcon className="h-full"/> <span className="py-2 hidden md:inline">EnderBase</span></Link>
@@ -51,7 +51,7 @@ export default async function RootLayout({
               <div className="flex-1 flex-col px-4 gap-20 max-w-5xl w-full py-2">
                 {children}
               </div>
-              <footer className="w-full border-t mx-auto text-center text-xs gap-8 p-4 px-5">
+              <footer className="w-full border-t mx-auto text-center text-xs gap-8 p-4 px-5 bg-background">
                 &copy; <TimeBasedText type="year"></TimeBasedText> WorldWideTurtle. All rights reserverd
               </footer>
             </div>
