@@ -40,6 +40,17 @@ export const updateSession = async (request: NextRequest) => {
     const session = await supabase.auth.getSession();
     const access_token = session.data.session?.access_token as string
     const { payload } = access_token === undefined ? {payload:null} : await jwtVerify(access_token,JWT_KEY); 
+    let loggedIn = false;
+
+    if (payload === null) {
+      const {data} = await supabase.auth.getUser();
+
+      if (data.user) {
+        loggedIn = true;
+      }
+    } else {
+      loggedIn = true;
+    }
 
     if (request.cookies.get("sb-agreedToCookies")?.value != "1") {
       request.cookies.getAll().forEach(e => {
@@ -56,11 +67,11 @@ export const updateSession = async (request: NextRequest) => {
     }
 
     // protected routes
-    if (request.nextUrl.pathname.startsWith("/worlds") && (payload === null)) {
+    if (request.nextUrl.pathname.startsWith("/worlds") && !loggedIn) {
       return NextResponse.redirect(new URL("/sign-in", request.url));
     }
 
-    if (request.nextUrl.pathname === "/" && (payload !== null)) {
+    if (request.nextUrl.pathname === "/" && loggedIn) {
       return NextResponse.redirect(new URL("/worlds", request.url));
     }
 
