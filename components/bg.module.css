@@ -3,7 +3,8 @@
     --start-y:0px;
     --end-x:256px;
     --end-y:256px;
-    animation: animation 300s linear;
+    animation-name: animation;
+    animation-timing-function: linear;
     animation-iteration-count: infinite;
 
     image-rendering: pixelated;
