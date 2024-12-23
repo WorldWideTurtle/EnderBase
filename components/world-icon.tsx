@@ -109,3 +109,7 @@ export function WorldIcon(props : Props) {
         </div>
     )
 }
+
+export default function IconNoSSR(props : Props) {
+    return WorldIcon(props)
+}

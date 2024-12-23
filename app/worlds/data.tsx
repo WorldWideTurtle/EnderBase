@@ -8,7 +8,12 @@ import { LucidePlus } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Dialog } from "@/components/dialog";
 import { createClient } from "@/utils/supabase/client";
-import { WorldIcon, WorldIconColors } from "@/components/world-icon";
+import { WorldIconColors } from "@/components/world-icon";
+import dynamic from 'next/dynamic'
+ 
+const WorldIcon = dynamic(() => import('@/components/world-icon'), {
+  ssr: false,
+})
 
 
 type pseudoProject = project & {loaded? : boolean}
@@ -77,11 +82,11 @@ export function Data() {
         <>
             <Dialog shouldClose={false} ref={dialogModal} title="Add world">
                 <form action={AddWorld} className="mt-8 flex flex-col gap-4">
-                    <div className="grid w-full md:grid-cols-6 lg:grid-cols-7 grid-cols-4 p-2 overflow-y-scroll gap-1 h-32 md:h-40">
-                        {WorldIconColors.map((e,i)=>(
-                            <WorldIcon onClick={()=>iconCallback(i)} key={i} className="group size-full cursor-pointer" iconIndex={i}></WorldIcon>
-                        ))}
-                    </div>
+                        <div className="grid w-full md:grid-cols-6 lg:grid-cols-7 grid-cols-4 p-2 overflow-y-scroll gap-1 h-32 md:h-40">
+                            {WorldIconColors.map((e,i)=>(
+                                <WorldIcon onClick={()=>iconCallback(i)} key={i} className="group size-full cursor-pointer" iconIndex={i}></WorldIcon>
+                            ))}
+                        </div>
                     <div className="flex w-full items-center gap-2">
                         <WorldIcon iconIndex={icon}></WorldIcon>
                         <Input 
