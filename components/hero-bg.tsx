@@ -1,6 +1,6 @@
 'use client'
 
-import { createRef, RefObject, useEffect, useRef } from "react";
+import { createRef, useEffect, useRef } from "react";
 import classes from "./bg.module.css"
 
 export function HeroBG() {
@@ -29,6 +29,8 @@ export function HeroBG() {
         img.crossOrigin = "Anonymous"; // Allows canvas operations on cross-origin images
         img.src = src;
 
+
+        const FULL_CIRCLE = Math.PI * 2;
         img.onload = () => {
             elementRefs.forEach(e=>{
                 if (fallbackRef.current) fallbackRef.current.remove();
@@ -37,13 +39,12 @@ export function HeroBG() {
                 ctx.filter = `hue-rotate(${Math.round(180 + Math.random() * 60)}deg) brightness(160%)`;
                 ctx.drawImage(img, 0, 0);
                 let dataURL = canvas.toDataURL()
-    
                 const scale = Math.round(1024 + Math.random() * 512*4);
                 const startX = Math.round(50 - Math.random() * 100);
                 const startY = Math.round(50 - Math.random() * 100);
-                const degreeOfRotation = Math.random() * Math.PI * 2;
-                const endX = startX + Math.sin(degreeOfRotation ) * scale;
-                const endY = startY + Math.cos(degreeOfRotation ) * scale;
+                const degreeOfRotation = Math.random() * FULL_CIRCLE;
+                const endX = startX;
+                const endY = startY - scale;
                 const elementStyle = e.current.style
                 elementStyle.backgroundImage = `url("${dataURL}")`
                 elementStyle.setProperty("--start-x", startX + "px")
@@ -52,6 +53,7 @@ export function HeroBG() {
                 elementStyle.setProperty("--end-y", endY + "px")
                 elementStyle.animationDuration = 1000 * (scale / 2560)**1.5 + "s"
                 elementStyle.backgroundSize = `${scale}px ${scale}px`
+                elementStyle.rotate = ((degreeOfRotation / FULL_CIRCLE) * 360 + 180) + "deg"
             })
         }
     })
@@ -82,8 +84,9 @@ export function HeroBG() {
                 }}></div>
             </div>
             {(new Array(layerCount)).fill(0).map((e,i)=>(
-                <div key={i} ref={elementRefs[i]} className={"w-full h-full bg-transparent absolute left-0 top-0 " + classes.animate}></div>
+                <div key={i} ref={elementRefs[i]} className={"w-[142vmax] h-[142vmax] bg-transparent absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] origin-top-left " + classes.animate}></div>
             ))}
         </div>
     )
 }
+/// VMAX 142 because the diagonal of a square is ~1.42 * the side length. This ensures no rotation causes empty corners
