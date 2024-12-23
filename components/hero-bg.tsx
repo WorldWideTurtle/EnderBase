@@ -34,20 +34,16 @@ export function HeroBG() {
                 if (fallbackRef.current) fallbackRef.current.remove();
                 if (!e.current) return;
                 ctx.clearRect(0,0,128,128)
-                ctx.filter = `hue-rotate(${Math.round(180 + Math.random() * 60)}deg)`;
+                ctx.filter = `hue-rotate(${Math.round(180 + Math.random() * 60)}deg) brightness(160%)`;
                 ctx.drawImage(img, 0, 0);
                 let dataURL = canvas.toDataURL()
     
                 const scale = Math.round(1024 + Math.random() * 512*4);
                 const startX = Math.round(50 - Math.random() * 100);
                 const startY = Math.round(50 - Math.random() * 100);
-<<<<<<< HEAD
-                const scale = Math.round(256 + Math.random() * 512*4);
-=======
                 const degreeOfRotation = Math.random() * Math.PI * 2;
                 const endX = startX + Math.sin(degreeOfRotation ) * scale;
                 const endY = startY + Math.cos(degreeOfRotation ) * scale;
->>>>>>> 3cb9de2 (Fix hero bg only going along diagonals)
                 const elementStyle = e.current.style
                 elementStyle.backgroundImage = `url("${dataURL}")`
                 elementStyle.setProperty("--start-x", startX + "px")
