@@ -34,7 +34,7 @@ export function HeroBG() {
                 if (fallbackRef.current) fallbackRef.current.remove();
                 if (!e.current) return;
                 ctx.clearRect(0,0,256,256)
-                ctx.filter = `hue-rotate(${Math.round(180 + Math.random() * 60)}deg)`;
+                ctx.filter = `hue-rotate(${Math.round(180 + Math.random() * 60)}deg) brightness(160%)`;
                 ctx.drawImage(img, 0, 0);
                 let dataURL = canvas.toDataURL()
     
