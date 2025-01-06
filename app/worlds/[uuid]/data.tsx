@@ -7,10 +7,12 @@ import { ColorsToNumber, minecraftColors } from "@/lib/colorUtils";
 import { Content, List, Root, Trigger } from "@radix-ui/react-tabs";
 import { PostgrestError } from "@supabase/supabase-js";
 import { LucidePlus } from "lucide-react";
-import { createRef, RefObject, useEffect, useRef, useState } from "react";
+import { createRef, RefObject, useContext, useEffect, useRef, useState } from "react";
 import { FrequencyList } from "./frequency-list";
 import { Dialog } from "@/components/dialog";
 import { createClient } from "@/utils/supabase/client";
+import { NotificationContext } from "@/components/notification-context";
+import { DBConfig } from "@/db/settings";
 
 type pseudoProjectData = projectData & {loaded?:boolean}
 export type { pseudoProjectData }
@@ -29,6 +31,8 @@ export function Data({ id } : {id : string}) {
     const chestFrequencySet : RefObject<Set<number>> = useRef(new Set())
     const tankFrequencySet : RefObject<Set<number>> = useRef(new Set())
     const dataFetchError : RefObject<PostgrestError | null> = useRef(null)
+
+    const notificationContext = useContext(NotificationContext);
 
     useEffect(() => {
         // Fetch project data on load
@@ -49,6 +53,9 @@ export function Data({ id } : {id : string}) {
                 setTankData(TankData);
                 setLoading(false);
             } else {
+                if (e.error.message.includes("NetworkError")) {
+                    notificationContext.notify("error","Failed to retrieve data for this world. Check your internet connection and try again in a moment.")
+                }
                 dataFetchError.current = e.error;
                 console.error(e.error.message)
             }
@@ -62,8 +69,8 @@ export function Data({ id } : {id : string}) {
         const description = formData.get("description") as string
         
         const encodedColor = ColorsToNumber([+a,+b,+c])
-        if (+a > 15 || +b > 15 || +c > 15) return {error:"Error, one of the colors is outside range"};
-        if (description === "" || description.length > 48) return {error:"Error, the description has to be between 3 and 48 characters"};
+        if (+a > 15 || +b > 15 || +c > 15) return {error:"One of the colors is outside range"};
+        if (description === "" || description.length > 48) return {error:"The description has to be between 3 and 48 characters"};
         return {
             color:encodedColor,
             description:description
@@ -77,9 +84,17 @@ export function Data({ id } : {id : string}) {
         const dispatcher = isEnderChest ? setChestData : setTankData;
 
         const {color, description, error} = ExtractInput(formData);
-        if (error || (color === undefined || description === undefined)) return;
+        if (error || (color === undefined || description === undefined)) {
+            if (error) {
+                notificationContext.notify("error",error);
+            }
+            return;
+        };
 
-        if (frequencySet.has(color)) return;
+        if (frequencySet.has(color)) {
+            notificationContext.notify("error","This frequency exists already.")
+            return;
+        };
         frequencySet.add(color)
 
         const tempId = `temp-${Math.random()}`; // Temporary ID for optimistic UI
@@ -98,7 +113,14 @@ export function Data({ id } : {id : string}) {
                 dispatcher((prev : pseudoProjectData[]) => {
                     return prev.toSpliced(insertedAt,1);
                 });
+
+                if (e.error.message.includes("NetworkError")) {
+                    notificationContext.notify("error","Failed to contact Server. Check your internet connection and try again in a moment.")
+                } else {
+                    notificationContext.notify("error","Failed to add frequency.")
+                }
             } else {
+                notificationContext.notify("success","Added frequency.")
                 const newID = e.data[0].new_id;
                 dispatcher((prev : pseudoProjectData[]) => {
                     const dataCopy = [...prev];
@@ -125,6 +147,11 @@ export function Data({ id } : {id : string}) {
 
         createClient().from('project_data').delete().eq('id', rowId).then(e=>{
             if (e.error) {
+                if (e.error.message.includes("NetworkError")) {
+                    notificationContext.notify("error","Failed to contact Server. Check your internet connection and try again in a moment.")
+                } else {
+                    notificationContext.notify("error","Failed to remove frequency.")
+                }
                 frequencySet.add(+deletedRow.number)
                 dispatcher((prev : projectData[]) => {
                     return [
@@ -207,7 +234,9 @@ export function Data({ id } : {id : string}) {
                 <Content value="chests">
                     <div className="flex justify-between items-end">
                         <h3 className="text-2xl">Frequencies</h3>
-                        <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading}>Add new <LucidePlus /></Button>
+                        <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading || chestData.length >= DBConfig.maxFrequencies}>
+                            {chestData.length >= DBConfig.maxFrequencies ? "Max reached" : <>Add new <LucidePlus /></>}
+                        </Button>
                     </div>
                     <div className="flex flex-col mt-2">
                         {loading ? 
@@ -222,7 +251,9 @@ export function Data({ id } : {id : string}) {
                 <Content value="tanks">
                     <div className="flex justify-between items-end">
                         <h3 className="text-2xl">Frequencies</h3>
-                        <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading}>Add new <LucidePlus /></Button>
+                        <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading || tankData.length >= DBConfig.maxFrequencies}>
+                            {tankData.length >= DBConfig.maxFrequencies ? "Max reached" : <>Add new <LucidePlus /></>}
+                        </Button>
                     </div>
                     <div className="flex flex-col mt-2">
                         {loading ? 
