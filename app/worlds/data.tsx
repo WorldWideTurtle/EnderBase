@@ -1,6 +1,6 @@
 'use client'
 
-import { RefObject, useEffect, useRef, useState } from "react";
+import { RefObject, useContext, useEffect, useRef, useState } from "react";
 import { World } from "@/components/world";
 import { project } from "@/db/schemes";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,8 @@ import { Dialog } from "@/components/dialog";
 import { createClient } from "@/utils/supabase/client";
 import { WorldIconColors } from "@/components/world-icon";
 import dynamic from 'next/dynamic'
+import { NotificationContext } from "@/components/notification-context";
+import { DBConfig } from "@/db/settings";
  
 const WorldIcon = dynamic(() => import('@/components/world-icon'), {
   ssr: false,
@@ -25,14 +27,18 @@ export function Data() {
     const [icon, setIcon] = useState<number>(0);
 
     const dialogModal : RefObject<HTMLDialogElement | null> = useRef(null)
-    
+
+    const notificationContext = useContext(NotificationContext);
+
     useEffect(() => {
         createClient().from("projects").select("project_uuid,project_name,icon_id").then(e=>{
             if (e.error === null) {
                 setProjectData(e.data);
                 setLoading(false);
             } else {
-                throw new Error(e.error.message)
+                if (e.error.message.includes("NetworkError")) {
+                    notificationContext.notify("error","Failed to contact Server. Check your internet connection and try again in a moment.")
+                }
             }
         });
     }, []);
@@ -49,7 +55,10 @@ export function Data() {
     function AddWorld(formData : FormData) {
         const name = formData.get("name") as string
 
-        if (name === "") return;
+        if (name === "") {
+            notificationContext.notify("error","The world name can't be empty.");
+            return;
+        };
         const tempId = `temp-${Math.random()}`;
         const optimisticRow = { project_name:name, project_uuid:"", id: tempId, loaded:false, icon_id:icon };
         const insertedAt = projectData.length;
@@ -57,17 +66,23 @@ export function Data() {
 
         createClient().from("projects").insert({project_name:name,icon_id:icon}).select().single().then(e=>{
             if (e.error) {
+                if (e.error.message.includes("NetworkError")) {
+                    notificationContext.notify("error","Failed to create world. Check your internet connection and try again in a moment.")
+                } else {
+                    notificationContext.notify("error","Failed to create world. Note that you can only have" + DBConfig.maxProjects + "personal worlds.")
+                }
                 setProjectData((prev : pseudoProject[]) => {
                     return prev.toSpliced(insertedAt,1);
                 });
             } else {
+                notificationContext.notify("success","Created new world.")
                 const newID = e.data.project_uuid;
-                    setProjectData((prev : pseudoProject[]) => {
-                        const dataCopy = [...prev];
-                        dataCopy[insertedAt].project_uuid = newID;
-                        dataCopy[insertedAt].loaded = true;
-                        return dataCopy
-                    });
+                setProjectData((prev : pseudoProject[]) => {
+                    const dataCopy = [...prev];
+                    dataCopy[insertedAt].project_uuid = newID;
+                    dataCopy[insertedAt].loaded = true;
+                    return dataCopy
+                });
             }
         })
 

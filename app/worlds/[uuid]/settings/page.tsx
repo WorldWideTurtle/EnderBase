@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { projectMember } from "@/db/schemes";
 import { LucideCopy, LucideRepeat, LucideTrash } from "lucide-react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
+import { NotificationContext } from "@/components/notification-context";
 
 export default function page() {
     const [memberData, setMemberData] = useState<projectMember[]>()
@@ -19,6 +20,8 @@ export default function page() {
     const [currentLink, setCurrentLink] = useState<string>()
     const [fetching, setFetching] = useState<boolean>(false)
 
+    const notificationContext = useContext(NotificationContext);
+
     function GetLink() {
         if (!worldContext?.worldID || currentLink) return;
 
@@ -27,8 +30,9 @@ export default function page() {
             setFetching(false)
             if (!e.error) {
                 setCurrentLink(e.data)
+                notificationContext.notify("success","Created invite link.")
             } else {
-                console.log(e.error)
+                notificationContext.notify("error","Unable to create invite link. Check your internet connection and try again in a moment.")
             }
         })
     }
@@ -50,7 +54,11 @@ export default function page() {
                 console.log(users)
                 currentUser.current = users.find(e=>e.user_id = worldContext.user.id) ?? null
             } else {
-                console.log(e.error)
+                if (e.error.message.includes("NetworkError")) {
+                    notificationContext.notify("error","Unable to retrieve members. Check your internet connection and try again in a moment.")
+                } else {
+                    notificationContext.notify("error","Unable to retrieve members.")
+                }
             }
         })
     },[worldContext?.worldID])
@@ -70,7 +78,11 @@ export default function page() {
                     user,
                     ...prev!.slice(userIndex + 1)
                 ])
-                console.log(e.error)
+                if (e.error.message.includes("NetworkError")) {
+                    notificationContext.notify("error","Unable to delete member. Check your internet connection and try again in a moment.")
+                } else {
+                    notificationContext.notify("error","Unable to delete member.")
+                }
             }
         })
     }
@@ -144,14 +156,21 @@ function ChangeWorldNameForm() {
     const [worldInput, setWorldInput] = useState<string>()
     const worldContext = useContext(ProjectContext)
 
+    const notificationContext = useContext(NotificationContext);
+
     function ChangeWorldName(formData : FormData) {
         let newName = formData.get("newName") as string;
         if (newName.length > 2 && newName.length <= 48) {
             createClient().from("projects").update({project_name:newName}).eq("project_uuid",worldContext?.worldID).then(e=>{
                 if (!e.error) {
                     worldContext?.setProjectName(newName)
+                    notificationContext.notify("success","Changed name.")
                 } else {
-                    console.log(e.error)
+                    if (e.error.message.includes("NetworkError")) {
+                        notificationContext.notify("error","Failed to change name. Check your internet connection and try again in a moment.")
+                    } else {
+                        notificationContext.notify("error","Failed to change name.")
+                    }
                 }
             })
         }
@@ -172,14 +191,20 @@ function DeleteWorldButton({currentUser} : {currentUser : projectMember | null})
     const worldContext = useContext(ProjectContext)
     const dialog = useRef<HTMLDialogElement>(null);
     const router = useRouter()
+    const notificationContext = useContext(NotificationContext);
 
     function DeleteWorld() {
         if (worldContext?.worldID) {
             createClient().from("projects").delete().eq("project_uuid",worldContext?.worldID).then(e=>{
                 if (!e.error) {
                     router.push("/worlds")
+                    notificationContext.notify("success",worldContext.projectName + " deleted");
                 } else {
-                    console.log(e.error)
+                    if (e.error.message.includes("NetworkError")) {
+                        notificationContext.notify("error","Failed to delete world. Check your internet connection and try again in a moment.")
+                    } else {
+                        notificationContext.notify("error","Failed to delete world.")
+                    }
                 }
             })
         }
