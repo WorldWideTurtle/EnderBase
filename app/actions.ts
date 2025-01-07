@@ -18,6 +18,19 @@ export async function AgreeCookies() {
     expires: 99999999999,
     maxAge: 99999999999
   })
+
+  let allCookies = store.getAll();
+  allCookies.forEach(e=>{
+    if (!e.name.startsWith("sb")) return;
+
+    store.delete(e.name)
+    store.set(e.name,e.value,{
+        path: "/",
+        sameSite: "lax",
+        expires: 99999999999,
+        maxAge: 99999999999
+      })
+  })
 }
 
 export async function DeclineCookies() {
