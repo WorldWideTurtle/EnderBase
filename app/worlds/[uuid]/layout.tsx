@@ -1,5 +1,5 @@
 import { ReactNode } from "react"
-import { WorldName } from "./world-name"
+import { WorldName } from "@/components/page-specific/world/world-name"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { createClient } from "@/utils/supabase/server"

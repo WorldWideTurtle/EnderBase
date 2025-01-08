@@ -24,7 +24,6 @@ export const ProjectProvider = ({ children, user } : {children : ReactNode, user
     const fetchProjectName = async () => {
       if (worldID) {
         setSwitching(true);
-        console.log("Fetching")
         createClient().from("projects").select("project_name,icon_id").eq("project_uuid",worldID).single().then(e=>{
             if (e.error === null) {
                 setProjectName(e.data.project_name);

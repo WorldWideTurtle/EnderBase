@@ -1,4 +1,5 @@
 import { Data } from "./data"
+import { WorldDataProvider } from "@/components/context/world-data-context"
 
 export default async function Page({params} : {
     params : Promise<{uuid:string}>
@@ -6,6 +7,8 @@ export default async function Page({params} : {
     const uuid = (await params).uuid
 
     return (
-        <Data id={uuid} />
+        <WorldDataProvider id={uuid}>
+            <Data />
+        </WorldDataProvider>
     )
 }

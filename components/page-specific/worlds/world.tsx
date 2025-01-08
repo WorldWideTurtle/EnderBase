@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { WorldIcon } from "./world-icon"
+import { WorldIcon } from "@/components/world-icon"
 import { project } from "@/db/schemes"
 
 

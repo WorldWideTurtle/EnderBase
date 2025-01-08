@@ -1,7 +1,7 @@
 'use client'
 
 import { forwardRef, ReactNode, useImperativeHandle, useRef, useState } from "react";
-import { Dialog } from "./dialog";
+import { Dialog } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 

@@ -1,7 +1,7 @@
 'use client'
 
 import { forwardRef, MouseEvent, ReactNode, useImperativeHandle, useRef } from "react";
-import { Button } from "./ui/button";
+import { Button } from "./button";
 import { LucidePlus } from "lucide-react";
 
 type DialogProps = {
