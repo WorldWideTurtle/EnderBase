@@ -1,8 +1,8 @@
 import { ReactNode } from "react"
-import { ProjectProvider } from "./worlds-context"
+import { ProjectProvider } from "../../components/context/worlds-context"
 import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
-import { NotificationProvider } from "@/components/notification-context";
+import { NotificationProvider } from "@/components/context/notification-context";
 
 type LayoutProps = {
     children: ReactNode

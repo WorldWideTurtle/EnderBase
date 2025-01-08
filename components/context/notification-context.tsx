@@ -69,7 +69,7 @@ export const NotificationProvider = ({ children } : {children? : ReactNode}) => 
     const contextValue = useMemo(()=>({
         notify,
         scheduleDelete
-    }), [])
+    }),[])
 
     return (
         <NotificationContext.Provider value={contextValue}>

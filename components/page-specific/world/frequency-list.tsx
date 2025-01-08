@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { pseudoProjectData } from "./data";
+import { pseudoProjectData } from "../../../app/worlds/[uuid]/data";
 import { CreateColorSwatches } from "@/lib/colorUtils";
 import { LucideTrash } from "lucide-react";
 

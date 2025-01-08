@@ -1,16 +1,16 @@
 'use client'
 
-import { RefObject, useContext, useEffect, useRef, useState } from "react";
-import { World } from "@/components/world";
+import { MouseEvent, RefObject, useContext, useEffect, useRef, useState } from "react";
+import { World } from "@/components/page-specific/worlds/world";
 import { project } from "@/db/schemes";
 import { Button } from "@/components/ui/button";
 import { LucidePlus } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { Dialog } from "@/components/dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { createClient } from "@/utils/supabase/client";
 import { WorldIconColors } from "@/components/world-icon";
 import dynamic from 'next/dynamic'
-import { NotificationContext } from "@/components/notification-context";
+import { NotificationContext } from "@/components/context/notification-context";
 import { DBConfig } from "@/db/settings";
  
 const WorldIcon = dynamic(() => import('@/components/world-icon'), {
@@ -38,6 +38,8 @@ export function Data() {
             } else {
                 if (e.error.message.includes("NetworkError")) {
                     notificationContext.notify("error","Failed to contact Server. Check your internet connection and try again in a moment.")
+                } else {
+                    notificationContext.notify("error","Failed to load worlds.")
                 }
             }
         });
@@ -69,7 +71,7 @@ export function Data() {
                 if (e.error.message.includes("NetworkError")) {
                     notificationContext.notify("error","Failed to create world. Check your internet connection and try again in a moment.")
                 } else {
-                    notificationContext.notify("error","Failed to create world. Note that you can only have" + DBConfig.maxProjects + "personal worlds.")
+                    notificationContext.notify("error","Failed to create world. Note that you can only have " + DBConfig.maxProjects + " personal worlds.")
                 }
                 setProjectData((prev : pseudoProject[]) => {
                     return prev.toSpliced(insertedAt,1);
@@ -95,7 +97,7 @@ export function Data() {
 
     return (
         <>
-            <Dialog shouldClose={false} ref={dialogModal} title="Add world">
+            <Dialog ref={dialogModal} title="Add world">
                 <form action={AddWorld} className="mt-8 flex flex-col gap-4">
                         <div className="grid w-full md:grid-cols-6 lg:grid-cols-7 grid-cols-4 p-2 overflow-y-scroll gap-1 h-32 md:h-40">
                             {WorldIconColors.map((e,i)=>(
@@ -113,7 +115,7 @@ export function Data() {
                             maxLength={48}
                         />
                     </div>
-                    <Button type="submit" name="w" className="mt-4">Add</Button>
+                    <Button type="submit" className="mt-4">Add</Button>
                 </form>
             </Dialog>
             <div className="flex justify-between items-end">
@@ -121,9 +123,7 @@ export function Data() {
                 <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading}>Add new <LucidePlus /></Button>
             </div>
             <div className="grid lg:grid-cols-3 sm:grid-cols-2 grid-flow-row auto-rows-fr gap-2 mt-2">
-                {loading ? <Skeleton /> : projectData ? projectData.length > 0 ? projectData.map(e=>(
-                    <World key={e.project_uuid} project={e} loaded={e.loaded ?? true}/>
-                )) : <p className="opacity-70 text-sm">No worlds. Make or join one to get started</p> : <div>Failed to load worlds</div>}
+                {loading ? <Skeleton /> : <WorldsDisplayList projectData={projectData}></WorldsDisplayList>}
             </div>
         </>
     )
@@ -133,4 +133,16 @@ function Skeleton() {
     return [1,2,3,4,5].map(e=>(
         <div key={e} className="h-14 w-full bg-input animate-pulse rounded-lg"></div>
     ))
+}
+
+function WorldsDisplayList({projectData}:{projectData:pseudoProject[]}) {
+    if (projectData.length == 0) {
+        return <p className="opacity-70 text-sm">No worlds. Make or join one to get started</p>
+    }
+
+    return (
+        projectData.map(e=>(
+            <World key={e.project_uuid} project={e} loaded={e.loaded ?? true}/>
+        ))
+    )
 }

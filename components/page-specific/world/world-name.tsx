@@ -1,7 +1,7 @@
 'use client'
 
 import { useContext, useEffect, useState } from "react";
-import { ProjectContext } from "../worlds-context";
+import { ProjectContext } from "@/components/context/worlds-context";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { WorldIcon } from "@/components/world-icon";

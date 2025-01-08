@@ -3,14 +3,14 @@
 import { Button } from "@/components/ui/button";
 import { Content, List, Root, Trigger } from "@radix-ui/react-tabs";
 import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import { ProjectContext } from "../../worlds-context";
+import { ProjectContext } from "@/components/context/worlds-context";
 import { createClient } from "@/utils/supabase/client";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { projectMember } from "@/db/schemes";
 import { LucideCopy, LucideRepeat, LucideTrash } from "lucide-react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { NotificationContext } from "@/components/notification-context";
+import { NotificationContext } from "@/components/context/notification-context";
 
 export default function page() {
     const [memberData, setMemberData] = useState<projectMember[]>()
