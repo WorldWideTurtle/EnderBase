@@ -20,7 +20,6 @@ export const Dialog = forwardRef<HTMLDialogElement,DialogProps>((props, ref) => 
     }
 
     function CheckDialogBounds(e : MouseEvent) {
-        console.log(e.target)
         if (localRef.current === null) return;
         const rect = localRef.current.getBoundingClientRect();
         if (
