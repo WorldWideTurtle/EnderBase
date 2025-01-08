@@ -1,6 +1,6 @@
 "use server";
 
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient, createClient } from "@/utils/supabase/server";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -39,3 +39,19 @@ export async function DeclineCookies() {
     path:"/",
   })
 }
+
+export async function deleteUser() {
+        const supabase = await createClient();
+        const {
+            data: { user },
+        } = await supabase.auth.getUser();
+
+        if (!user) return
+
+        const supabaseAdmin = await createAdminClient();
+
+        await supabase.auth.signOut();
+        await supabaseAdmin.auth.admin.deleteUser(user.id);
+
+        return redirect("/")
+    }
