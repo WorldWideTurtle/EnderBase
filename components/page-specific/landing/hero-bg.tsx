@@ -26,7 +26,7 @@ export function HeroBG() {
         canvas.height = 128;
 
         const img = new Image();
-        img.crossOrigin = "Anonymous"; // Allows canvas operations on cross-origin images
+        img.crossOrigin = "Anonymous";
         img.src = src;
 
 
@@ -51,12 +51,13 @@ export function HeroBG() {
                 elementStyle.setProperty("--start-y", startY + "px")
                 elementStyle.setProperty("--end-x", endX + "px")
                 elementStyle.setProperty("--end-y", endY + "px")
+                e.current.classList.add(classes.animate);
                 elementStyle.animationDuration = 1000 * (scale / 2560)**1.5 + "s"
                 elementStyle.backgroundSize = `${scale}px ${scale}px`
                 elementStyle.rotate = ((degreeOfRotation / FULL_CIRCLE) * 360 + 180) + "deg"
             })
         }
-    })
+    }, [])
 
     return (
         <div className="absolute w-full h-full top-0 -z-20 isolate overflow-hidden opacity-30 contain-strict">
@@ -84,7 +85,7 @@ export function HeroBG() {
                 }}></div>
             </div>
             {(new Array(layerCount)).fill(0).map((e,i)=>(
-                <div key={i} ref={elementRefs[i]} className={"w-[142vmax] h-[142vmax] bg-transparent absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] origin-top-left " + classes.animate}></div>
+                <div key={i} ref={elementRefs[i]} className="w-[142vmax] h-[142vmax] bg-transparent absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] origin-top-left">.</div>
             ))}
         </div>
     )
