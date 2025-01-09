@@ -1,10 +1,10 @@
-import { CSSProperties } from "react";
+import { CSSProperties, memo } from "react";
 
 type Props = {
     className?: string
-    iconIndex?: number
+    iconIndex: number
     style?: CSSProperties
-    onClick?: ()=>void
+    onClick?: (index: number)=>void
 }
 
 function componentToHex(c : number) {
@@ -92,9 +92,13 @@ export function WorldIcon(props : Props) {
         ...darkColors
     ]
 
+    function clickHandler () {
+        props.onClick?.(props.iconIndex);
+    }
+
     return (
         <div title={iconColor[1]}>
-            <svg onClick={props.onClick} xmlns="http://www.w3.org/2000/svg" viewBox="-10 -10 696 800" width={48} height={48} className={props.className} style={props.style}>
+            <svg onClick={clickHandler} xmlns="http://www.w3.org/2000/svg" viewBox="-10 -10 696 800" width={48} height={48} className={props.className} style={props.style}>
                 <path fill={setIcon[0]} className="stroke-black dark:stroke-white group-hover:stroke-[40px]" d="M400 12.1 64.1 206.1V593.9L400 787.9l335.9-194V206.1L400 12.1" transform="translate(-62.1 -9.8)" strokeLinecap="round" strokeLinejoin="round"/>
                 <polygon fill={setIcon[0]} points="2 196.2 337.9 2.3 673.8 196.3 337.9 390.2"/>
                 <polygon fill={setIcon[4]} points="2 584.1 2 196.2 337.9 389.2 337.9 778"/>
@@ -110,6 +114,4 @@ export function WorldIcon(props : Props) {
     )
 }
 
-export default function IconNoSSR(props : Props) {
-    return WorldIcon(props)
-}
+export const MemoizedWorldIcon = memo(WorldIcon);
