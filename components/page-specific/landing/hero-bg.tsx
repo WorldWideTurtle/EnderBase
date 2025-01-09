@@ -39,7 +39,7 @@ export function HeroBG() {
                 ctx.filter = `hue-rotate(${Math.round(180 + Math.random() * 60)}deg) brightness(160%)`;
                 ctx.drawImage(img, 0, 0);
                 let dataURL = canvas.toDataURL()
-                const scale = Math.round(1024 + Math.random() * 512*4);
+                const scale = Math.round(512 + Math.random() * 512*2);
                 const startX = Math.round(50 - Math.random() * 100);
                 const startY = Math.round(50 - Math.random() * 100);
                 const degreeOfRotation = Math.random() * FULL_CIRCLE;

@@ -52,7 +52,7 @@ export default async function RootLayout({
                 {children}
               </div>
               <footer className="w-full border-t mx-auto text-center text-xs gap-8 p-4 px-5 bg-background">
-                &copy; <TimeBasedText type="year"></TimeBasedText> WorldWideTurtle. All rights reserverd
+                &copy; <TimeBasedText type="year"></TimeBasedText> WorldWideTurtle. All rights reserved.
               </footer>
             </div>
           </main>
