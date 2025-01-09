@@ -70,12 +70,12 @@ export function Data() {
                         
                         <div className="flex flex-col gap-2 mt-1">
                             {["a","b","c"].map((group,groupIndex)=>(
-                                <ul key={group} className="grid grid-rows-1 max-md:grid-rows-2 grid-flow-col border border-input max-md:gap-1">
+                                <ul key={group} aria-label={"Choose color " + group} className="grid grid-rows-1 max-md:grid-rows-2 grid-flow-col border border-input max-md:gap-1">
                                     {minecraftColors.map((color,colorIndex)=>(
-                                        <li key={group + colorIndex} className="size-6 aspect-square">
-                                            <Input ref={colorInputRefs[groupIndex * 16 + colorIndex]} name={group} id={group + colorIndex} type="radio" value={colorIndex} className="hidden peer" required/>
+                                        <li key={group + colorIndex} className="size-6 aspect-square overflow-hidden">
+                                            <Input ref={colorInputRefs[groupIndex * 16 + colorIndex]} aria-label={color[1]} name={group} id={group + colorIndex} type="radio" value={colorIndex} className="hidden peer" required/>
                                             <Label htmlFor={group + colorIndex} className="size-full inline-block hover:outline hover:outline-1 hover:relative peer-checked:outline-2 peer-checked:outline peer-checked:relative" style={{
-                                                background: color
+                                                background: color[0]
                                             }}></Label>
                                         </li>
                                     ))}
@@ -83,8 +83,8 @@ export function Data() {
                             ))}
                         </div>
                     </div>
-                    <Input name="description" type="text" placeholder="Description"/>
-                    <Button type="submit" className="mt-4">Add</Button>
+                    <Input name="description" type="text" placeholder="Description" aria-label="Frequency description"/>
+                    <Button type="submit" className="mt-4">Add Frequency</Button>
                 </form>
             </Dialog>
             <Root defaultValue="chests" onValueChange={OnTabChange}>

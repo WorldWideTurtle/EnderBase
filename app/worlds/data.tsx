@@ -90,11 +90,11 @@ export function Data() {
             </Dialog>
             <div className="flex justify-between items-end">
                 <h3 className="text-2xl">Your worlds</h3>
-                <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading}>Add new <LucidePlus /></Button>
+                <Button title="Add new World" onClick={OpenDialog} variant={"default"} disabled={loading}>Add new <LucidePlus /></Button>
             </div>
-            <div className="grid lg:grid-cols-3 sm:grid-cols-2 grid-flow-row auto-rows-fr gap-2 mt-2">
+            <ul className="grid lg:grid-cols-3 sm:grid-cols-2 grid-flow-row auto-rows-fr gap-2 mt-2" aria-label="Your worlds">
                 {loading ? <Skeleton /> : <MemoizedWorldsDisplayList projectData={projectData}></MemoizedWorldsDisplayList>}
-            </div>
+            </ul>
         </>
     )
 }
@@ -109,15 +109,18 @@ function AddWorldForm({formSubmitAction}:{formSubmitAction:(formData:FormData, i
     return (
         <form action={submitAction} className="mt-8 flex flex-col gap-4">
             <WorldIconList onClick={setIcon} selected={icon}></WorldIconList>
+            <label htmlFor="name" className="sr-only">World name</label>
             <div className="flex w-full items-center gap-2">
                 <MemoizedWorldIcon iconIndex={icon}></MemoizedWorldIcon>
                 <Input 
+                    id="name"
                     name="name" 
                     type="text" 
                     placeholder="Name" 
                     required
                     minLength={3}
                     maxLength={48}
+                    autoComplete="off"
                 />
             </div>
             <Button type="submit" className="mt-4">Add</Button>
@@ -127,21 +130,29 @@ function AddWorldForm({formSubmitAction}:{formSubmitAction:(formData:FormData, i
 
 function WorldIconList({onClick, selected}:{onClick?:(icon:number)=>void, selected:number}) {
     return (
-        <div className="grid w-full md:grid-cols-6 lg:grid-cols-7 grid-cols-4 p-2 overflow-y-scroll gap-1 h-32 md:h-40">
+        <ul className="grid w-full md:grid-cols-6 lg:grid-cols-7 grid-cols-4 p-2 overflow-y-scroll gap-1 h-32 md:h-40">
             {WorldIconColors.map((e,i)=>{
                 if (selected === i) {
-                    return <MemoizedWorldIcon onClick={onClick} key={i} className="group size-full cursor-pointer" style={{strokeWidth:"40px"}} iconIndex={i}></MemoizedWorldIcon>
+                    return (
+                        <li key={i}>
+                            <MemoizedWorldIcon onClick={onClick} className="group size-full cursor-pointer" style={{strokeWidth:"40px"}} iconIndex={i}></MemoizedWorldIcon>
+                        </li>
+                    )
                 } else {
-                    return <MemoizedWorldIcon onClick={onClick} key={i} className="group size-full cursor-pointer" iconIndex={i}></MemoizedWorldIcon>
+                    return (
+                        <li key={i}>
+                            <MemoizedWorldIcon onClick={onClick} className="group size-full cursor-pointer" iconIndex={i}></MemoizedWorldIcon> 
+                        </li>
+                    )
                 }
             })}
-        </div>
+        </ul>
     )
 }
 
 function Skeleton() {
     return [1,2,3,4,5].map(e=>(
-        <div key={e} className="h-14 w-full bg-input animate-pulse rounded-lg"></div>
+        <li key={e} className="h-14 w-full bg-input animate-pulse rounded-lg"></li>
     ))
 }
 
@@ -152,7 +163,9 @@ function WorldsDisplayList({projectData}:{projectData:pseudoProject[]}) {
 
     return (
         projectData.map(e=>(
-            <World key={e.project_uuid} project={e} loaded={e.loaded ?? true}/>
+            <li key={e.project_uuid}>
+                <World project={e} loaded={e.loaded ?? true}/>
+            </li>
         ))
     )
 }
