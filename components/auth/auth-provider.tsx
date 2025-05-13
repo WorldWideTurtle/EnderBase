@@ -2,29 +2,40 @@
 
 import { createClient } from "@/utils/supabase/client";
 import { Button } from "../ui/button";
-import { ReactNode, useState } from "react";
+import { ReactNode, useRef, useState } from "react";
 import LoadingSpinnerIcon from "@/Icons/loading-spinner.svg"
 
 type Props = {
     provider : "discord" | "github" | "google"
-    icon: ReactNode
+    icon: ReactNode,
+    disabled?: boolean,
+    onClick?: Function
 }
 
 export function AuthProvider(props : Props) {
     const [pending, setPending] = useState<boolean>(false)
+
     async function signIn() {
+        if (pending) return;
+
+        if (props.onClick != null) props.onClick();
+
+        setPending(true)
+
+        return;
+
+
         await createClient().auth.signInWithOAuth({
             provider: props.provider,
             options: {
-              redirectTo: `${window.location.origin}/auth/callback`
+              redirectTo: `${window.location.origin}/auth/callback`,
             }
         })
-        setPending(true)
     }
     
     return (
         <div className="w-full relative">
-            <Button onClick={signIn} className="w-full flex *:h-full *:w-auto gap-2 items-center justify-start">
+            <Button disabled={props.disabled} onClick={signIn} type="submit" className="w-full flex *:h-full *:w-auto gap-2 items-center justify-start">
                 {props.icon}
                 {props.provider.replace(/^./,(text) => text.toUpperCase())}
             </Button>

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { projectData } from "@/db/schemes";
 import { CreateColorSwatches, minecraftColors } from "@/lib/colorUtils";
 import { Content, List, Root, Trigger } from "@radix-ui/react-tabs";
-import { createRef, RefObject, useRef, useState } from "react";
+import { createRef, RefObject, useEffect, useRef, useState } from "react";
 import { Dialog } from "@/components/ui/dialog";
 import { useWorldDataContext } from "@/components/context/world-data-context";
 import { FrequencyDisplay } from "@/components/page-specific/world/frequency-display";

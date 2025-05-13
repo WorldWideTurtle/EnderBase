@@ -17,7 +17,7 @@ export function FrequencyDisplay({data,OpenDialog,isEnderChestTab}:{data:pseudoP
     return (
         <>
             <div className="flex justify-between items-end">
-                <h3 className="text-2xl">Frequencies</h3>
+                <h3 className="text-3xl">Frequencies</h3>
                 <Button title="Add new Frequency" onClick={OpenDialog} variant={"default"} disabled={loading || data.length >= DBConfig.maxFrequencies}>
                     {data.length >= DBConfig.maxFrequencies ? "Max reached" : <>Add new <LucidePlus /></>}
                 </Button>
